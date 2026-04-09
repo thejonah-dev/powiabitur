@@ -6019,7 +6019,7 @@
             const nextBtn = document.getElementById('quiz-next-btn');
             
             optionsContainer.innerHTML = '';
-            feedback.style.display = 'none';
+            feedback.style.display = ''; // Clear inline style so CSS classes work
             feedback.className = 'quiz-feedback';
             nextBtn.style.display = 'none';
             
