@@ -864,17 +864,30 @@
         }
         .streak-days {
             display: flex;
-            gap: 0.5rem;
-            justify-content: space-between;
+            gap: 1rem;
+            justify-content: flex-start;
             margin-top: 1.5rem;
             overflow-x: auto;
-            padding-bottom: 0.5rem;
+            padding-bottom: 1rem;
+            scroll-behavior: smooth;
+        }
+        .streak-days::-webkit-scrollbar {
+            height: 8px;
+        }
+        .streak-days::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+        }
+        .streak-days::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
         }
         .streak-day-wrapper {
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 0.5rem;
+            flex-shrink: 0;
         }
         .streak-day {
             width: 48px;
@@ -895,9 +908,120 @@
             box-shadow: 0 0 15px rgba(74, 222, 128, 0.4);
             transform: scale(1.1);
         }
+        .streak-day.today {
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        .streak-day.exam-day {
+            background: var(--error);
+            color: white;
+            box-shadow: 0 0 15px rgba(248, 113, 113, 0.4);
+            border: 2px solid white;
+        }
         .streak-date {
             font-size: 0.8rem;
             color: var(--subtext);
+        }
+
+        /* --- Interactive Lernzettel Styles --- */
+        .glossary-term {
+            color: var(--primary);
+            border-bottom: 1px dashed var(--primary);
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+        .glossary-term:hover {
+            color: #fff;
+            border-bottom-color: #fff;
+        }
+        .glossary-tooltip {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-10px);
+            background: #1e293b;
+            border: 1px solid var(--border);
+            padding: 0.75rem;
+            border-radius: 8px;
+            width: max-content;
+            max-width: 250px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.8);
+            z-index: 100;
+            font-size: 0.9rem;
+            color: var(--text);
+            pointer-events: none;
+            opacity: 0;
+            transition: all 0.2s;
+            text-align: left;
+            line-height: 1.4;
+            font-weight: normal;
+        }
+        .glossary-term:hover .glossary-tooltip {
+            opacity: 1;
+            transform: translateX(-50%) translateY(-5px);
+        }
+        
+        .active-recall-mode li {
+            filter: blur(5px);
+            transition: filter 0.3s ease, background 0.3s ease;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 6px;
+            margin-bottom: 0.25rem;
+        }
+        .active-recall-mode li:hover {
+            filter: blur(0);
+            background: rgba(255,255,255,0.05);
+        }
+        .active-recall-mode h4 {
+            color: var(--primary);
+        }
+        
+        .interactive-li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            cursor: pointer;
+            padding: 0.25rem 0;
+            transition: opacity 0.2s;
+            list-style-type: none;
+        }
+        .interactive-li.checked {
+            opacity: 0.5;
+            text-decoration: line-through;
+        }
+        .li-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border);
+            border-radius: 4px;
+            flex-shrink: 0;
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .interactive-li.checked .li-checkbox {
+            background: var(--success);
+            border-color: var(--success);
+        }
+        .interactive-li.checked .li-checkbox::after {
+            content: '✓';
+            color: #000;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .lz-toolbar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
         }
 
         /* --- Lückentext Styles --- */
@@ -1390,8 +1514,8 @@
 
             <div class="streak-container">
                 <h3 style="display: flex; align-items: center; gap: 0.5rem; color: var(--primary);">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-                    Lern-Streak (Letzte 7 Tage)
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    Lern-Kalender & Streak
                 </h3>
                 <div class="streak-days" id="streak-days-container">
                     <!-- Injected via JS -->
@@ -1471,45 +1595,41 @@
         const lernzettelContent = {
             'q1_1': `
                 <div class="content-body">
-                    <h4>Grundprinzipien des GG</h4>
+                    <h4>Grundprinzipien des GG (Art. 20 GG)</h4>
                     <ul>
-                        <li>Rechtsstaatsprinzip, Demokratieprinzip, Sozialstaatsprinzip, Bundesstaatsprinzip, Republikprinzip</li>
+                        <li><strong>Rechtsstaatsprinzip:</strong> Alle staatliche Macht ist an Recht und Gesetz gebunden. Garantiert Willkürverbot, Gewaltenteilung und Rechtssicherheit.</li>
+                        <li><strong>Demokratieprinzip:</strong> Alle Staatsgewalt geht vom Volke aus (Volkssouveränität). Wird durch Wahlen und Abstimmungen ausgeübt.</li>
+                        <li><strong>Sozialstaatsprinzip:</strong> Der Staat ist verpflichtet, für soziale Gerechtigkeit und soziale Sicherheit zu sorgen (z.B. Existenzminimum, Sozialversicherungen).</li>
+                        <li><strong>Bundesstaatsprinzip:</strong> Aufteilung der Staatsgewalt zwischen dem Bund und den 16 Bundesländern (Föderalismus). Verhindert Machtkonzentration.</li>
+                        <li><strong>Republikprinzip:</strong> Das Staatsoberhaupt wird gewählt (Bundespräsident) und nicht vererbt (keine Monarchie).</li>
                     </ul>
                     <h4>Gewaltenteilung</h4>
                     <ul>
-                        <li>Legislative (Bundestag/Bundesrat), Exekutive (Bundesregierung), Judikative (BVerfG)</li>
+                        <li><strong>Legislative (Gesetzgebung):</strong> Bundestag (wählt Kanzler, beschließt Gesetze) und Bundesrat (Vertretung der Länder).</li>
+                        <li><strong>Exekutive (Ausführung):</strong> Bundesregierung (Kanzler + Minister) und die gesamte öffentliche Verwaltung (Polizei, Ämter).</li>
+                        <li><strong>Judikative (Rechtsprechung):</strong> Unabhängige Gerichte, an der Spitze das Bundesverfassungsgericht (BVerfG).</li>
                     </ul>
                     <h4>Wichtige GG-Artikel</h4>
                     <ul>
-                        <li>Art. 1 (Menschenwürde), Art. 2 (freie Entfaltung), Art. 3 (Gleichheit), Art. 5 (Meinungsfreiheit), Art. 8 (Versammlungsfreiheit), Art. 9 (Koalitionsfreiheit), Art. 14 (Eigentum), Art. 20 (Staatsprinzipien), Art. 79 (Ewigkeitsklausel), Art. 93 (BVerfG)</li>
+                        <li><strong>Art. 1:</strong> Die Würde des Menschen ist unantastbar. (Höchstes Gut der Verfassung)</li>
+                        <li><strong>Art. 2:</strong> Recht auf freie Entfaltung der Persönlichkeit (Handlungsfreiheit).</li>
+                        <li><strong>Art. 3:</strong> Gleichheitsgrundsatz (Niemand darf diskriminiert werden).</li>
+                        <li><strong>Art. 5:</strong> Meinungs-, Presse- und Informationsfreiheit (ohne Zensur).</li>
+                        <li><strong>Art. 20:</strong> Verankerung der Staatsstrukturprinzipien (siehe oben) und Widerstandsrecht.</li>
+                        <li><strong>Art. 79 Abs. 3 (Ewigkeitsklausel):</strong> Art. 1 und Art. 20 dürfen niemals geändert oder abgeschafft werden, selbst nicht mit 2/3-Mehrheit.</li>
                     </ul>
-                    <h4>BVerfG</h4>
+                    <h4>Bundesverfassungsgericht (BVerfG)</h4>
                     <ul>
-                        <li>Aufgaben, Normenkontrolle (abstrakt/konkret), Verfassungsbeschwerde</li>
-                    </ul>
-                    <h4>EGMR</h4>
-                    <ul>
-                        <li>Europäischer Gerichtshof für Menschenrechte, Verhältnis zum BVerfG</li>
-                    </ul>
-                    <h4>Gesetzgebungsprozess</h4>
-                    <ul>
-                        <li>Initiative → Bundesrat 1. Durchgang → Bundestag (1./2./3. Lesung) → Bundesrat 2. Durchgang → Einspruchs- vs. Zustimmungsgesetz → Vermittlungsausschuss → Bundespräsident → Bundesgesetzblatt</li>
-                    </ul>
-                    <h4>Spannungsfeld Exekutive/Legislative</h4>
-                    <ul>
-                        <li>Regierungsdominanz in der Praxis</li>
-                    </ul>
-                    <h4>EU-Recht und nationales Recht</h4>
-                    <ul>
-                        <li>Vorrang, Ultra-vires-Doktrin</li>
+                        <li><strong>Rolle:</strong> "Hüter der Verfassung", wacht über die Einhaltung des Grundgesetzes.</li>
+                        <li><strong>Abstrakte Normenkontrolle:</strong> Prüfung eines Gesetzes auf Verfassungsmäßigkeit, unabhängig von einem konkreten Rechtsstreit (z.B. auf Antrag von 1/4 der Bundestagsabgeordneten).</li>
+                        <li><strong>Konkrete Normenkontrolle:</strong> Ein Gericht setzt ein laufendes Verfahren aus, weil es ein entscheidungsrelevantes Gesetz für verfassungswidrig hält, und fragt das BVerfG.</li>
+                        <li><strong>Verfassungsbeschwerde:</strong> Jeder Bürger kann sich ans BVerfG wenden, wenn er sich durch die Staatsgewalt (Gesetz, Urteil, Behörde) in seinen Grundrechten verletzt fühlt.</li>
                     </ul>
                     <h4>Wehrhafte Demokratie</h4>
                     <ul>
-                        <li>Parteiverbot (Art. 21 Abs. 2), Verwirkung von Grundrechten (Art. 18), Verfassungsschutz</li>
-                    </ul>
-                    <h4>Spannungsverhältnis Freiheit vs. Sicherheit</h4>
-                    <ul>
-                        <li>Sicherheitsgesetze, Überwachung, Verhältnismäßigkeit</li>
+                        <li><strong>Konzept:</strong> Die Verfassung bietet Instrumente, um sich gegen Feinde der Demokratie zu wehren (Lehre aus dem Scheitern der Weimarer Republik).</li>
+                        <li><strong>Parteiverbot (Art. 21 Abs. 2):</strong> Parteien, die die freiheitliche demokratische Grundordnung abschaffen wollen, können vom BVerfG verboten werden (z.B. SRP, KPD).</li>
+                        <li><strong>Verwirkung von Grundrechten (Art. 18):</strong> Wer Grundrechte zum Kampf gegen die Demokratie missbraucht, kann diese verlieren.</li>
                     </ul>
                 </div>
             `,
@@ -1517,263 +1637,171 @@
                 <div class="content-body">
                     <h4>Funktionen von Parteien</h4>
                     <ul>
-                        <li>Interessenaggregation, Politische Sozialisation, Rekrutierung, Regierungsbildung</li>
+                        <li><strong>Interessenaggregation:</strong> Bündelung der vielfältigen Interessen aus der Gesellschaft zu einem politischen Programm.</li>
+                        <li><strong>Politische Sozialisation:</strong> Vermittlung von politischen Werten und Einbindung der Bürger in den politischen Prozess.</li>
+                        <li><strong>Rekrutierung:</strong> Auswahl und Ausbildung von politischem Personal (Kandidaten für Parlamente und Regierungsämter).</li>
+                        <li><strong>Regierungsbildung & Kontrolle:</strong> Die Mehrheit bildet die Regierung, die Minderheit übernimmt die Oppositionsrolle zur Kontrolle.</li>
                     </ul>
-                    <h4>Parteienlandschaft BRD</h4>
+                    <h4>Wahlsystem zum Bundestag (Personalisiertes Verhältniswahlrecht)</h4>
                     <ul>
-                        <li>CDU/CSU, SPD, Grüne, FDP, Linke, AfD – Einordnung und Positionen</li>
-                    </ul>
-                    <h4>Wahlsystem</h4>
-                    <ul>
-                        <li>Erststimme (Direktmandat), Zweitstimme (Verhältniswahl), 5%-Hürde, Grundmandatsklausel, Überhang- und Ausgleichsmandate</li>
-                    </ul>
-                    <h4>Koalitionstypen</h4>
-                    <ul>
-                        <li>Große Koalition, Ampel, Schwarz-Grün, Minderheitsregierung</li>
-                    </ul>
-                    <h4>Parteifinanzierung</h4>
-                    <ul>
-                        <li>Staatliche Teilfinanzierung, Eigenfinanzierung, Transparenzpflichten</li>
+                        <li><strong>Erststimme:</strong> Wahl eines Direktkandidaten im Wahlkreis (Mehrheitswahl). Garantiert regionale Vertretung.</li>
+                        <li><strong>Zweitstimme:</strong> Wahl der Landesliste einer Partei. <em>Entscheidend</em> für die prozentuale Sitzverteilung im Bundestag (Verhältniswahl).</li>
+                        <li><strong>5%-Hürde:</strong> Eine Partei muss mindestens 5% der Zweitstimmen erhalten, um in den Bundestag einzuziehen (verhindert Parteienzersplitterung wie in Weimar).</li>
+                        <li><strong>Grundmandatsklausel:</strong> Wer 3 Direktmandate gewinnt, zieht entsprechend seinem Zweitstimmenanteil in den Bundestag ein, auch wenn er unter 5% liegt.</li>
                     </ul>
                     <h4>Populismus</h4>
                     <ul>
-                        <li>Definition, Abgrenzung links/rechts, Merkmale (Anti-Establishment, Krisenrhetorik, Volksbegriff)</li>
+                        <li><strong>Definition:</strong> Ein Politikstil, der die Gesellschaft in zwei homogene, antagonistische Gruppen teilt: das "reine Volk" und die "korrupte Elite".</li>
+                        <li><strong>Merkmale:</strong> Anti-Establishment-Haltung, Krisenrhetorik, Anspruch auf den alleinigen Vertretungsanspruch des wahren Volkswillens, oft einfache Lösungen für komplexe Probleme.</li>
+                        <li><strong>Gefahr für die Demokratie:</strong> Untergräbt den Pluralismus (die Akzeptanz verschiedener legitimer Meinungen) und den Minderheitenschutz.</li>
                     </ul>
                     <h4>Alternative Beteiligungsformen</h4>
                     <ul>
-                        <li>Volksbegehren/Volksentscheid (Länderebene), Petition (Art. 17 GG), Bürgerbegehren, Demonstration (Art. 8 GG)</li>
-                    </ul>
-                    <h4>Europaparlament</h4>
-                    <ul>
-                        <li>Wahl, Kompetenzen (Mitgesetzgebung, Haushalt, Kontrolle, Wahl der Kommission), Demokratiedefizit der EU</li>
+                        <li><strong>Direkte Demokratie (auf Länderebene):</strong> Volksbegehren (Unterschriftensammlung) und Volksentscheid (Abstimmung wie bei einer Wahl).</li>
+                        <li><strong>Petitionen (Art. 17 GG):</strong> Jeder hat das Recht, sich mit Bitten oder Beschwerden an die zuständigen Behörden oder Parlamente zu wenden.</li>
+                        <li><strong>Demonstrationen (Art. 8 GG):</strong> Versammlungsfreiheit als Mittel, um öffentlich auf Missstände aufmerksam zu machen.</li>
                     </ul>
                 </div>
             `,
             'q1_4': `
                 <div class="content-body">
-                    <h4>Habermas und Öffentlichkeit</h4>
+                    <h4>Habermas und die Öffentlichkeit</h4>
                     <ul>
-                        <li>Funktionen (Information, Kritik/Kontrolle, Artikulation, Legitimation), herrschaftsfreier Diskurs als Ideal</li>
+                        <li><strong>Ideal:</strong> Der herrschaftsfreie Diskurs. Argumente sollen zählen, nicht Macht oder Status.</li>
+                        <li><strong>Funktionen der Medien:</strong> Information (sachlich und umfassend), Artikulation (Meinungen der Bürger widerspiegeln), Kritik und Kontrolle (die "Vierte Gewalt" im Staat).</li>
                     </ul>
-                    <h4>Medienwandel</h4>
+                    <h4>Medienlandschaft in Deutschland</h4>
                     <ul>
-                        <li>Massenpresse → Rundfunk → Internet → Social Media; Gatekeeper-Funktion</li>
+                        <li><strong>Duales Rundfunksystem:</strong> Nebeneinander von öffentlich-rechtlichen (ARD, ZDF) und privaten Sendern (RTL, ProSieben).</li>
+                        <li><strong>Öffentlich-rechtlicher Rundfunk:</strong> Finanziert durch den Rundfunkbeitrag. Hat einen gesetzlichen Programmauftrag (Grundversorgung mit Info, Bildung, Kultur, Unterhaltung) und ist staatsfern organisiert.</li>
+                        <li><strong>Private Medien:</strong> Finanziert durch Werbung und Abos. Orientieren sich stärker an Einschaltquoten und Profit.</li>
                     </ul>
-                    <h4>Öffentlich-rechtliche vs. private Medien</h4>
+                    <h4>Herausforderungen durch Social Media</h4>
                     <ul>
-                        <li>Rundfunkbeitrag, Programmauftrag, Werbefinanzierung</li>
+                        <li><strong>Gatekeeper-Verlust:</strong> Früher filterten Journalisten (Gatekeeper) die Nachrichten nach Relevanz und Wahrheit. Heute kann jeder ungefiltert senden.</li>
+                        <li><strong>Filterblasen (Eli Pariser):</strong> Algorithmen zeigen Nutzern bevorzugt Inhalte, die ihren bisherigen Vorlieben entsprechen. Man wird isoliert von anderen Meinungen.</li>
+                        <li><strong>Echokammern:</strong> Soziales Phänomen, bei dem sich Gleichgesinnte in geschlossenen Gruppen gegenseitig in ihren (oft extremen) Ansichten bestärken, ohne Widerspruch zuzulassen.</li>
+                        <li><strong>Fake News / Desinformation:</strong> Gezielte Verbreitung falscher Informationen zur Manipulation der öffentlichen Meinung oder aus finanziellen Motiven.</li>
                     </ul>
                     <h4>Zivilgesellschaft</h4>
                     <ul>
-                        <li>Definition, Formen (NGOs, Bürgerinitiativen, Gewerkschaften), Funktionen</li>
-                    </ul>
-                    <h4>Filterblasen (Eli Pariser)</h4>
-                    <ul>
-                        <li>Algorithmus → personalisierte Informationswelt → verschiedene Realitäten</li>
-                    </ul>
-                    <h4>Echokammern</h4>
-                    <ul>
-                        <li>Soziales Phänomen, Unterschied zur Filterblase</li>
-                    </ul>
-                    <h4>Folgen für Demokratie</h4>
-                    <ul>
-                        <li>Polarisierung, Verlust gemeinsamer Öffentlichkeit, Radikalisierung</li>
-                    </ul>
-                    <h4>Fake News / Desinformation</h4>
-                    <ul>
-                        <li>Begriffe, Verbreitungsmechanismen, Gegenmaßnahmen (DSA, Fact-Checking, Medienkompetenz)</li>
-                    </ul>
-                    <h4>Populismus und Social Media</h4>
-                    <ul>
-                        <li>Direktkommunikation, Emotionalisierung, algorithmische Verstärkung</li>
-                    </ul>
-                    <h4>Pressefreiheit</h4>
-                    <ul>
-                        <li>Art. 5 GG, Reporter ohne Grenzen</li>
-                    </ul>
-                    <h4>Digitale Demokratie</h4>
-                    <ul>
-                        <li>Chancen (Partizipation, Transparenz) und Risiken (Digital Divide, Überwachung, Manipulation, Hate Speech)</li>
+                        <li><strong>Definition:</strong> Der Bereich zwischen Staat, Wirtschaft und Privatsphäre, in dem sich Bürger freiwillig engagieren.</li>
+                        <li><strong>Akteure:</strong> NGOs (z.B. Greenpeace, Amnesty), Bürgerinitiativen, Vereine, Gewerkschaften.</li>
+                        <li><strong>Bedeutung:</strong> Wichtiges Korrektiv zur Politik, bringt neue Themen auf die Agenda und fördert den gesellschaftlichen Zusammenhalt.</li>
                     </ul>
                 </div>
             `,
             'q2_1': `
                 <div class="content-body">
-                    <h4>BIP</h4>
+                    <h4>Bruttoinlandsprodukt (BIP)</h4>
                     <ul>
-                        <li>nominal vs. real, Wachstum und Rezession</li>
+                        <li><strong>Definition:</strong> Wert aller Güter und Dienstleistungen, die in einem Jahr innerhalb der Landesgrenzen produziert werden. Maßstab für wirtschaftliche Leistung.</li>
+                        <li><strong>Nominales vs. Reales BIP:</strong> Nominales BIP nutzt aktuelle Preise (inkl. Inflation). Reales BIP ist preisbereinigt und zeigt das tatsächliche Mengenwachstum.</li>
+                        <li><strong>Kritik am BIP:</strong> Erfasst keine unbezahlte Arbeit (Hausarbeit, Ehrenamt), sagt nichts über Einkommensverteilung aus und ignoriert Umweltschäden.</li>
                     </ul>
                     <h4>Konjunkturzyklus</h4>
                     <ul>
-                        <li>Aufschwung → Boom → Abschwung → Rezession (Merkmale jeder Phase)</li>
+                        <li><strong>Aufschwung (Expansion):</strong> Steigende Nachfrage, sinkende Arbeitslosigkeit, zunehmende Investitionen.</li>
+                        <li><strong>Boom (Hochkonjunktur):</strong> Kapazitäten voll ausgelastet, Vollbeschäftigung, Gefahr von Inflation durch Übernachfrage.</li>
+                        <li><strong>Abschwung (Rezession):</strong> Sinkende Nachfrage, steigende Arbeitslosigkeit, sinkende Investitionen. (Technisch: 2 Quartale in Folge negatives Wachstum).</li>
+                        <li><strong>Tiefstand (Depression):</strong> Hohe Arbeitslosigkeit, viele Insolvenzen, Deflationsgefahr.</li>
                     </ul>
-                    <h4>Konjunkturindikatoren</h4>
+                    <h4>Inflation und Deflation</h4>
                     <ul>
-                        <li>Früh-, Präsens-, Spätindikatoren; Ifo-Index</li>
+                        <li><strong>Inflation:</strong> Anhaltender Anstieg des allgemeinen Preisniveaus (Geldentwertung). Ziel der EZB: ca. 2%.</li>
+                        <li><strong>Ursachen:</strong> Nachfrageinflation (Nachfrage > Angebot), Angebotsinflation (gestiegene Produktionskosten, z.B. Energie), importierte Inflation.</li>
+                        <li><strong>Deflation:</strong> Anhaltender Rückgang des Preisniveaus. Gefährlich, da Konsumenten Käufe aufschieben, was zu einer Abwärtsspirale (Produktionsrückgang, Entlassungen) führt.</li>
                     </ul>
-                    <h4>Inflation</h4>
+                    <h4>Wirtschaftspolitische Konzeptionen</h4>
                     <ul>
-                        <li>Definition, VPI, EZB-Ziel 2%; Ursachen (Nachfrage-, Angebots-, importierte Inflation); Folgen; Deflation und ihre Gefahren</li>
+                        <li><strong>Keynesianismus (Nachfragepolitik):</strong> Der Staat muss in der Krise eingreifen. Durch <em>Deficit Spending</em> (Schuldenaufnahme) soll der Staat die fehlende private Nachfrage ersetzen (z.B. durch Bauprojekte). In Boom-Phasen sollen Schulden getilgt werden (Antizyklische Fiskalpolitik).</li>
+                        <li><strong>Angebotspolitik (Neoklassik/Monetarismus):</strong> Fokus auf die Verbesserung der Produktionsbedingungen für Unternehmen (Steuersenkungen, Deregulierung, Flexibilisierung des Arbeitsmarktes). Der Markt reguliert sich selbst, der Staat soll sich zurückhalten.</li>
                     </ul>
-                    <h4>Keynesianismus</h4>
+                    <h4>Die Europäische Zentralbank (EZB)</h4>
                     <ul>
-                        <li>Grundgedanke, effektive Gesamtnachfrage, Deficit Spending, Multiplikatoreffekt (Formel: 1/(1-c)), Grenzen (Crowding Out, offene VW, Zeitverzug)</li>
-                    </ul>
-                    <h4>Gesamtnachfrage</h4>
-                    <ul>
-                        <li>Y = C + I + G + (X-M)</li>
-                    </ul>
-                    <h4>Fiskalpolitik</h4>
-                    <ul>
-                        <li>expansiv (Rezession) vs. kontraktiv (Boom); Staatsverschuldung als Problem</li>
-                    </ul>
-                    <h4>Keynesianismus vs. Angebotspolitik</h4>
-                    <ul>
-                        <li>Vergleichstabelle (Nachfragesteuerung vs. Angebotsbedingungen)</li>
-                    </ul>
-                    <h4>EZB</h4>
-                    <ul>
-                        <li>Mandat, Unabhängigkeit, Instrumente (Leitzins, Offenmarktpolitik, Mindestreserve), Wirkungsmechanismus</li>
-                    </ul>
-                    <h4>Magisches Viereck</h4>
-                    <ul>
-                        <li>Preisstabilität, Beschäftigung, Wachstum, außenwirtschaftliches Gleichgewicht</li>
+                        <li><strong>Mandat:</strong> Oberstes Ziel ist die Gewährleistung der Preisstabilität (ca. 2% Inflation).</li>
+                        <li><strong>Unabhängigkeit:</strong> Die EZB darf keine Weisungen von Regierungen annehmen, um politisch motivierte Gelddruckerei zu verhindern.</li>
+                        <li><strong>Leitzins:</strong> Wichtigstes Instrument. Zinssenkung macht Kredite billiger (kurbelt Wirtschaft an, erhöht Inflation). Zinserhöhung macht Kredite teurer (bremst Wirtschaft, dämpft Inflation).</li>
                     </ul>
                 </div>
             `,
             'q2_2': `
                 <div class="content-body">
-                    <h4>Grundidee</h4>
+                    <h4>Soziale Marktwirtschaft</h4>
                     <ul>
-                        <li>Müller-Armack, Ludwig Erhard, Verbindung von Markt und Sozial</li>
-                    </ul>
-                    <h4>Ordnungspolitik vs. Prozesspolitik vs. Strukturpolitik</h4>
-                    <ul>
-                        <li>Definitionen und Unterschiede der wirtschaftspolitischen Eingriffsebenen</li>
+                        <li><strong>Grundidee:</strong> Verbindung der Freiheit auf dem Markt (Wettbewerb, Privateigentum) mit sozialem Ausgleich und sozialer Absicherung (Müller-Armack, Ludwig Erhard).</li>
+                        <li><strong>Rolle des Staates:</strong> Setzt den rechtlichen Rahmen (Ordnungspolitik), sichert den Wettbewerb und greift umverteilend ein (Sozialpolitik).</li>
                     </ul>
                     <h4>Marktformen</h4>
                     <ul>
-                        <li>Polypol, Oligopol, Monopol, Monopson</li>
+                        <li><strong>Polypol:</strong> Viele Anbieter, viele Nachfrager. Führt zu starkem Wettbewerb und optimalen Preisen für Konsumenten.</li>
+                        <li><strong>Oligopol:</strong> Wenige große Anbieter, viele Nachfrager (z.B. Tankstellen, Mobilfunk). Gefahr von Preisabsprachen.</li>
+                        <li><strong>Monopol:</strong> Ein einziger Anbieter. Kann Preise diktieren, schlecht für Konsumenten.</li>
                     </ul>
-                    <h4>Monopole</h4>
+                    <h4>Wettbewerbspolitik</h4>
                     <ul>
-                        <li>natürliches Monopol, rechtliches Monopol, faktisches Monopol; Probleme; staatliche Reaktionen</li>
-                    </ul>
-                    <h4>Kartellrecht</h4>
-                    <ul>
-                        <li>Definition Kartell, Beispiele, Bundeskartellamt (Missbrauchsaufsicht, Fusionskontrolle, Kartellverfolgung), Kronzeugenregelung, EU-Kommission</li>
-                    </ul>
-                    <h4>Deregulierung</h4>
-                    <ul>
-                        <li>Argumente dafür und dagegen, historische Beispiele (Telekommunikation, Energie, Finanzmärkte)</li>
+                        <li><strong>Bundeskartellamt:</strong> Wacht über den Wettbewerb. Aufgaben: Fusionskontrolle (Verhinderung von Monopolen durch Zusammenschlüsse), Kartellverfolgung (Aufdecken illegaler Preisabsprachen) und Missbrauchsaufsicht.</li>
+                        <li><strong>Kronzeugenregelung:</strong> Wer ein Kartell als Erster anzeigt, geht straffrei aus. Wichtigstes Instrument zur Aufdeckung.</li>
                     </ul>
                     <h4>Marktversagen</h4>
                     <ul>
-                        <li>externe Effekte (negativ/positiv), öffentliche Güter, Informationsasymmetrien, Marktmacht</li>
-                    </ul>
-                    <h4>Externe Effekte</h4>
-                    <ul>
-                        <li>Pigou-Steuer, Emissionshandel, Regulierung, Subventionen</li>
-                    </ul>
-                    <h4>Öffentliche Güter</h4>
-                    <ul>
-                        <li>Ausschließbarkeit, Rivalität, Trittbrettfahrerproblem, staatliche Bereitstellung</li>
-                    </ul>
-                    <h4>Informationsasymmetrien</h4>
-                    <ul>
-                        <li>Adverse Selektion, Moral Hazard, staatliche Reaktionen</li>
-                    </ul>
-                    <h4>Grenzen staatlicher Eingriffe</h4>
-                    <ul>
-                        <li>Staatsversagen</li>
+                        <li><strong>Externe Effekte:</strong> Kosten (z.B. Umweltverschmutzung) oder Nutzen, die nicht im Marktpreis enthalten sind. Der Staat muss internalisieren (z.B. durch CO2-Steuer).</li>
+                        <li><strong>Öffentliche Güter:</strong> Güter, bei denen niemand vom Konsum ausgeschlossen werden kann (z.B. Straßenbeleuchtung, Deiche). Der freie Markt stellt sie nicht bereit (Trittbrettfahrerproblem), daher muss der Staat sie finanzieren.</li>
+                        <li><strong>Informationsasymmetrien:</strong> Eine Marktseite weiß mehr als die andere (z.B. Gebrauchtwagenmarkt, Versicherungen). Führt zu Adverse Selektion und Moral Hazard.</li>
                     </ul>
                 </div>
             `,
             'q2_4': `
                 <div class="content-body">
-                    <h4>Arbeitsmarkt</h4>
+                    <h4>Arbeitsmarkt und Arbeitslosigkeit</h4>
                     <ul>
-                        <li>Angebot/Nachfrage, Besonderheiten, Gleichgewichtslohn</li>
+                        <li><strong>Konjunkturelle Arbeitslosigkeit:</strong> Entsteht durch einen allgemeinen wirtschaftlichen Abschwung (Rezession). Nachfrage nach Arbeitskräften sinkt.</li>
+                        <li><strong>Strukturelle Arbeitslosigkeit:</strong> Entsteht durch Wandel in der Wirtschaft (z.B. Digitalisierung, Kohleausstieg). Qualifikationen der Arbeitslosen passen nicht zu den offenen Stellen.</li>
+                        <li><strong>Friktionelle Arbeitslosigkeit:</strong> Kurzfristige Sucharbeitslosigkeit beim Wechsel zwischen zwei Jobs.</li>
                     </ul>
-                    <h4>Arbeitslosigkeit</h4>
+                    <h4>Tarifautonomie und Tarifverträge</h4>
                     <ul>
-                        <li>konjunkturell, strukturell, friktionell, saisonal; Messung und Grenzen der Statistik</li>
+                        <li><strong>Tarifautonomie (Art. 9 GG):</strong> Gewerkschaften und Arbeitgeberverbände handeln Löhne und Arbeitsbedingungen unabhängig vom Staat aus.</li>
+                        <li><strong>Flächentarifvertrag:</strong> Gilt für eine ganze Branche in einer bestimmten Region. Verhindert Schmutzkonkurrenz über Löhne.</li>
+                        <li><strong>Streik und Aussperrung:</strong> Streik ist das letzte Mittel der Gewerkschaften. Aussperrung (Lohnentzug ohne Arbeit) ist das Gegenmittel der Arbeitgeber.</li>
                     </ul>
-                    <h4>Tarifautonomie</h4>
+                    <h4>Wandel der Arbeitswelt</h4>
                     <ul>
-                        <li>Art. 9 Abs. 3 GG, Bedeutung für Soziale Marktwirtschaft</li>
+                        <li><strong>Atypische Beschäftigung:</strong> Abweichungen vom Normalarbeitsverhältnis (Vollzeit, unbefristet). Dazu gehören Teilzeit, Befristung, Leiharbeit und Minijobs. Führt oft zu Prekarisierung (Unsicherheit).</li>
+                        <li><strong>Mindestlohn:</strong> Staatliche Lohnuntergrenze. Soll vor Ausbeutung schützen und Existenzminimum sichern. Kritiker fürchten Arbeitsplatzverluste bei Geringqualifizierten.</li>
                     </ul>
-                    <h4>Tarifverträge</h4>
+                    <h4>Gerechtigkeitskonzepte</h4>
                     <ul>
-                        <li>Arten (Entgelt-, Mantel-, Flächen-, Haustarif); Allgemeinverbindlichkeit; sinkende Tarifbindung</li>
-                    </ul>
-                    <h4>Gewerkschaften</h4>
-                    <ul>
-                        <li>Funktionen, DGB und Einzelgewerkschaften (IG Metall, Ver.di, IG BCE), Streikrecht und Voraussetzungen</li>
-                    </ul>
-                    <h4>Arbeitgeberverbände</h4>
-                    <ul>
-                        <li>BDA, Trennung von Wirtschafts- und Arbeitgeberinteressen</li>
-                    </ul>
-                    <h4>Mindestlohn</h4>
-                    <ul>
-                        <li>Geschichte, aktuelle Höhe, Argumente pro/contra</li>
-                    </ul>
-                    <h4>Atypische Beschäftigung</h4>
-                    <ul>
-                        <li>Teilzeit, Minijobs, Befristung, Leiharbeit, Solo-Selbständige; Prekarisierung</li>
-                    </ul>
-                    <h4>Aktuelle Herausforderungen</h4>
-                    <ul>
-                        <li>Digitalisierung (Substitution vs. Komplementär), Fachkräftemangel, Gig Economy</li>
-                    </ul>
-                    <h4>Gerechtigkeitsbegriffe</h4>
-                    <ul>
-                        <li>Bedarfsgerechtigkeit, Leistungsgerechtigkeit, Chancengleichheit, Verteilungsgerechtigkeit; Anwendung auf Mindestlohn; Diskriminierung und AGG</li>
+                        <li><strong>Leistungsgerechtigkeit:</strong> Wer mehr leistet, soll mehr erhalten (Marktprinzip).</li>
+                        <li><strong>Bedarfsgerechtigkeit:</strong> Jeder soll bekommen, was er für ein menschenwürdiges Leben braucht (z.B. Kindergeld, Bürgergeld).</li>
+                        <li><strong>Chancengerechtigkeit:</strong> Alle sollen die gleichen Startbedingungen haben (z.B. durch kostenlose Bildung).</li>
                     </ul>
                 </div>
             `,
             'q3_1': `
                 <div class="content-body">
-                    <h4>Konflikttypen nach Intensität</h4>
+                    <h4>Die Vereinten Nationen (UN)</h4>
                     <ul>
-                        <li>latent → manifest → Krise → begrenzter Krieg → Krieg</li>
+                        <li><strong>Ziele:</strong> Sicherung des Weltfriedens, Schutz der Menschenrechte, internationale Zusammenarbeit.</li>
+                        <li><strong>Gewaltverbot (Art. 2 Abs. 4):</strong> Androhung und Anwendung von Gewalt sind verboten. Ausnahmen: Selbstverteidigung (Art. 51) und Mandat des Sicherheitsrats.</li>
+                        <li><strong>Sicherheitsrat:</strong> Mächtigstes Organ. 5 ständige Mitglieder mit Vetorecht (USA, Russland, China, Frankreich, UK) und 10 wechselnde. Kann bindende Sanktionen oder militärisches Eingreifen (Kapitel VII) beschließen.</li>
+                        <li><strong>Generalversammlung:</strong> Alle Mitgliedsstaaten haben eine Stimme. Beschlüsse sind völkerrechtlich nicht bindend, haben aber hohe symbolische Bedeutung.</li>
                     </ul>
-                    <h4>Konfliktursachen</h4>
+                    <h4>Konfliktursachen und -arten</h4>
                     <ul>
-                        <li>territorial, ethnisch/religiös, wirtschaftlich, ideologisch, historisch, Staatsversagen</li>
+                        <li><strong>Ursachen:</strong> Ressourcenknappheit, territoriale Ansprüche, ethnische/religiöse Spannungen, ideologische Gegensätze, Staatsversagen (Failed States).</li>
+                        <li><strong>Asymmetrische Kriege:</strong> Kampf zwischen ungleichen Gegnern, z.B. staatliche Armee gegen Terrornetzwerke oder Guerilla-Gruppen.</li>
                     </ul>
-                    <h4>UN</h4>
+                    <h4>Friedenssicherung</h4>
                     <ul>
-                        <li>Gründung 1945, Charta, Prinzipien (Souveränität, Gewaltverbot, friedliche Streitbeilegung), Organe</li>
-                    </ul>
-                    <h4>UN-Sicherheitsrat</h4>
-                    <ul>
-                        <li>5 ständige Mitglieder + Vetorecht, 10 nicht-ständige; Kapitel VI (friedlich) vs. Kapitel VII (Zwang); Handlungsunfähigkeit bei P5-Konflikt</li>
-                    </ul>
-                    <h4>Reformdebatte Sicherheitsrat</h4>
-                    <ul>
-                        <li>mehr ständige Mitglieder, Einschränkung Vetorecht</li>
+                        <li><strong>Peacekeeping (Blauhelme):</strong> Friedenssicherung mit Zustimmung der Konfliktparteien (Waffenstillstand überwachen).</li>
+                        <li><strong>Peace Enforcement:</strong> Friedensschaffung mit militärischer Gewalt, auch gegen den Willen von Parteien (nur mit UN-Mandat).</li>
+                        <li><strong>Responsibility to Protect (R2P):</strong> Schutzverantwortung. Wenn ein Staat seine Bürger nicht vor Völkermord oder Kriegsverbrechen schützt, greift die internationale Gemeinschaft ein.</li>
                     </ul>
                     <h4>NATO</h4>
                     <ul>
-                        <li>Gründung 1949, Art. 5 Bündnisfall, 32 Mitglieder, Generalsekretär, Aufgaben nach Kaltem Krieg, 2%-Ziel, Russland-Spannungsfeld</li>
-                    </ul>
-                    <h4>Deeskalationsinstrumente</h4>
-                    <ul>
-                        <li>Diplomatie → Sanktionen → UN-Peacekeeping → Peace Enforcement → humanitäre Intervention</li>
-                    </ul>
-                    <h4>R2P (Responsibility to Protect)</h4>
-                    <ul>
-                        <li>drei Säulen, Kritik</li>
-                    </ul>
-                    <h4>Aktuelle Konflikte</h4>
-                    <ul>
-                        <li>Ukraine-Krieg (Zeitenwende, Völkerrechtsverletzung, Vetopraxis), Nahostkonflikt</li>
-                    </ul>
-                    <h4>Deutsche Außenpolitik</h4>
-                    <ul>
-                        <li>Multilateralismus, Zivilmacht, Westbindung, Erinnerungskultur</li>
+                        <li><strong>Bündnisfall (Art. 5):</strong> Ein bewaffneter Angriff auf ein Mitglied wird als Angriff auf alle betrachtet (kollektive Verteidigung).</li>
+                        <li><strong>Wandel:</strong> Vom reinen Verteidigungsbündnis im Kalten Krieg hin zu einem Bündnis, das auch Out-of-Area-Einsätze (z.B. Afghanistan) durchführt.</li>
                     </ul>
                 </div>
             `,
@@ -1781,91 +1809,48 @@
                 <div class="content-body">
                     <h4>Globalisierung</h4>
                     <ul>
-                        <li>Definition, Treiber, vier Dimensionen (ökonomisch, politisch, kulturell, ökologisch)</li>
+                        <li><strong>Dimensionen:</strong> Wirtschaftlich (Freihandel, globale Lieferketten), politisch (internationale Organisationen), kulturell (Homogenisierung vs. Hybridisierung), ökologisch (Klimawandel).</li>
+                        <li><strong>Ursachen:</strong> Technologischer Fortschritt (Transport, Kommunikation), politische Öffnung (Ende des Kalten Krieges), Liberalisierung des Handels.</li>
                     </ul>
-                    <h4>Freihandel</h4>
+                    <h4>Freihandel vs. Protektionismus</h4>
                     <ul>
-                        <li>komparativer Vorteil (Ricardo), Argumente pro/contra</li>
+                        <li><strong>Freihandel (Theorie der komparativen Kostenvorteile nach Ricardo):</strong> Spezialisierung und Handel bringen Wohlstandsgewinne für alle beteiligten Länder, auch wenn ein Land in allem produktiver ist.</li>
+                        <li><strong>Protektionismus:</strong> Schutz der heimischen Wirtschaft durch Zölle, Importquoten, Subventionen oder technische Standards (nichttarifäre Handelshemmnisse).</li>
+                        <li><strong>Gründe für Protektionismus:</strong> Schutz junger Industrien (Infant Industry), Sicherung von Arbeitsplätzen, strategische Unabhängigkeit (Reshoring).</li>
                     </ul>
-                    <h4>Protektionismus</h4>
+                    <h4>Internationale Wirtschaftsorganisationen</h4>
                     <ul>
-                        <li>Instrumente (Zölle, Quoten, Subventionen, technische Hemmnisse, Embargos), Rechtfertigungen (Infant Industry, nationale Sicherheit, Standards)</li>
+                        <li><strong>WTO (Welthandelsorganisation):</strong> Fördert den Freihandel. Wichtige Prinzipien: Meistbegünstigung (Vorteile für einen gelten für alle) und Inländerbehandlung (ausländische Güter dürfen nicht diskriminiert werden).</li>
+                        <li><strong>IWF (Internationaler Währungsfonds):</strong> Sichert die globale Finanzstabilität. Vergibt Kredite an Krisenländer, oft geknüpft an harte Reformauflagen (Strukturanpassungsprogramme).</li>
+                        <li><strong>Weltbank:</strong> Fördert die wirtschaftliche Entwicklung in ärmeren Ländern durch langfristige Kredite für Projekte (Infrastruktur, Bildung).</li>
                     </ul>
-                    <h4>WTO</h4>
+                    <h4>Aktuelle Entwicklungen</h4>
                     <ul>
-                        <li>Gründung, Kernprinzipien (Meistbegünstigung, Inländerbehandlung, Reziprozität, Transparenz), Streitbeilegung, aktuelle Krise (Appellate Body)</li>
-                    </ul>
-                    <h4>IWF und Weltbank</h4>
-                    <ul>
-                        <li>Aufgaben und Kritik</li>
-                    </ul>
-                    <h4>G7/G20</h4>
-                    <ul>
-                        <li>informelle Koordination</li>
-                    </ul>
-                    <h4>Schwellenländer/BRICS</h4>
-                    <ul>
-                        <li>Zusammensetzung, Ziele, Gegengewicht zum Westen</li>
-                    </ul>
-                    <h4>China</h4>
-                    <ul>
-                        <li>Belt and Road, Handelskonflikte, Tech-Krieg</li>
-                    </ul>
-                    <h4>US-China-Handelskrieg</h4>
-                    <ul>
-                        <li>Zölle, Chips, seltene Erden</li>
-                    </ul>
-                    <h4>Globalisierungskritik</h4>
-                    <ul>
-                        <li>Stiglitz, Klein; Befürworter vs. Kritiker</li>
-                    </ul>
-                    <h4>Deglobalisierung/Reshoring</h4>
-                    <ul>
-                        <li>Corona und Ukraine als Wendepunkte, CBAM</li>
+                        <li><strong>BRICS-Staaten:</strong> Brasilien, Russland, Indien, China, Südafrika. Bilden zunehmend ein Gegengewicht zu westlich dominierten Institutionen.</li>
+                        <li><strong>Reshoring / Deglobalisierung:</strong> Rückverlagerung von Produktion ins Inland, um Lieferketten krisenfester zu machen (Reaktion auf Corona-Pandemie und geopolitische Spannungen).</li>
                     </ul>
                 </div>
             `,
             'q3_5': `
                 <div class="content-body">
-                    <h4>Grundproblem</h4>
+                    <h4>Klimawandel als globales Problem</h4>
                     <ul>
-                        <li>globales Kollektivgutproblem, Trittbrettfahrer, historische Verantwortung</li>
+                        <li><strong>Kollektivgutproblem:</strong> Klimaschutz ist ein globales öffentliches Gut. Ein Staat profitiert von den Maßnahmen anderer, auch wenn er selbst nichts tut (Trittbrettfahrerproblem).</li>
+                        <li><strong>Historische Verantwortung:</strong> Industrieländer haben den Großteil der Treibhausgase verursacht und sind wirtschaftlich leistungsfähiger, weshalb sie mehr Lasten tragen sollen.</li>
+                        <li><strong>Kipppunkte:</strong> Kritische Schwellen im Klimasystem (z.B. Schmelzen des Grönlandeises, Auftauen von Permafrostböden), die bei Überschreiten unumkehrbare und sich selbst verstärkende Effekte auslösen.</li>
                     </ul>
-                    <h4>IPCC</h4>
+                    <h4>Internationale Klimapolitik</h4>
                     <ul>
-                        <li>Funktion, Kernaussagen, Kipppunkte</li>
+                        <li><strong>Pariser Abkommen (2015):</strong> Ziel ist die Begrenzung der Erderwärmung auf deutlich unter 2°C, idealerweise 1,5°C.</li>
+                        <li><strong>NDCs (Nationally Determined Contributions):</strong> Jeder Staat legt eigene, freiwillige Klimaschutzziele fest.</li>
+                        <li><strong>Ratchet-Mechanismus:</strong> Ambitionssteigerung. Die NDCs müssen alle 5 Jahre überprüft und verschärft werden.</li>
+                        <li><strong>Loss and Damage Fonds:</strong> Finanzielle Unterstützung für ärmere Länder, die besonders stark von unabwendbaren Klimaschäden (z.B. Meeresspiegelanstieg, Dürren) betroffen sind.</li>
                     </ul>
-                    <h4>Kyoto-Protokoll 1997</h4>
+                    <h4>Instrumente der Umweltpolitik</h4>
                     <ul>
-                        <li>Inhalt, Scheitern (USA, Kanada)</li>
-                    </ul>
-                    <h4>Pariser Abkommen 2015</h4>
-                    <ul>
-                        <li>1,5°C-Ziel, 196 Unterzeichner, NDCs, Ratchet-Mechanismus; Stärken und Schwächen; „verbindlich in der Form, freiwillig im Inhalt"</li>
-                    </ul>
-                    <h4>COP-Konferenzen</h4>
-                    <ul>
-                        <li>COP21 (Paris), COP26 (Glasgow), COP27 (Loss and Damage), COP28 (Dubai)</li>
-                    </ul>
-                    <h4>Instrumente</h4>
-                    <ul>
-                        <li>CO₂-Steuer (Vor-/Nachteile), Emissionshandel ETS (Cap, Reform 2023), Regulierung (Verbrennerverbot), Subventionen (EEG), CBAM</li>
-                    </ul>
-                    <h4>CO₂-Steuer vs. ETS</h4>
-                    <ul>
-                        <li>Vergleichstabelle</li>
-                    </ul>
-                    <h4>Klimagerechtigkeit</h4>
-                    <ul>
-                        <li>historische Verantwortung, aktuelle Betroffenheit, Loss and Damage Fonds, 100-Mrd.-Versprechen</li>
-                    </ul>
-                    <h4>Akteure</h4>
-                    <ul>
-                        <li>EU, USA (Wankelmütigkeit), China, Indien, kleine Inselstaaten, NGOs, Fridays for Future</li>
-                    </ul>
-                    <h4>Verbindungen</h4>
-                    <ul>
-                        <li>Q2.2 (externe Effekte/Pigou), Q3.1 (Ressourcenkonflikte), Q3.2 (CBAM)</li>
+                        <li><strong>Ordnungsrecht:</strong> Verbote und Grenzwerte (z.B. Verbot von FCKW, Abgasnormen).</li>
+                        <li><strong>Marktwirtschaftliche Instrumente:</strong> CO2-Steuer (fester Preis, unsichere Menge) oder Emissionshandel (Cap and Trade: feste Menge, Preis bildet sich am Markt).</li>
+                        <li><strong>Subventionen:</strong> Staatliche Förderung umweltfreundlicher Technologien (z.B. EEG-Umlage für Erneuerbare Energien, Kaufprämie für E-Autos).</li>
                     </ul>
                 </div>
             `
@@ -1907,37 +1892,122 @@
             `;
         });
 
-        // Initialize Lernzettel
-        const accordionContainer = document.getElementById('accordion-container');
-        topics.forEach(topic => {
-            const content = lernzettelContent[topic.id] || '<div class="content-body"><p style="color: var(--subtext);">Inhalt folgt in der nächsten Iteration.</p></div>';
+        const glossary = {
+            "BVerfG": "Bundesverfassungsgericht: Höchstes deutsches Gericht, wacht über die Einhaltung des Grundgesetzes.",
+            "Legislative": "Gesetzgebende Gewalt: Bundestag und Bundesrat.",
+            "Exekutive": "Ausführende Gewalt: Bundesregierung und Verwaltung.",
+            "Judikative": "Rechtsprechende Gewalt: Die Gerichte.",
+            "Normenkontrolle": "Prüfung, ob ein Gesetz mit der Verfassung (Grundgesetz) vereinbar ist.",
+            "Verfassungsbeschwerde": "Rechtsbehelf für Bürger, wenn sie sich durch die Staatsgewalt in ihren Grundrechten verletzt fühlen.",
+            "EGMR": "Europäischer Gerichtshof für Menschenrechte in Straßburg.",
+            "Ewigkeitsklausel": "Art. 79 Abs. 3 GG: Bestimmte Grundprinzipien (Art. 1 und 20) dürfen niemals geändert werden.",
+            "Sozialstaatsprinzip": "Verpflichtung des Staates, für soziale Gerechtigkeit und soziale Sicherheit zu sorgen.",
+            "Rechtsstaatsprinzip": "Alle staatliche Macht ist an Recht und Gesetz gebunden.",
+            "Demokratieprinzip": "Alle Staatsgewalt geht vom Volke aus (Wahlen, Abstimmungen).",
+            "Bundesstaatsprinzip": "Aufteilung der Staatsgewalt zwischen Bund und Ländern.",
+            "Republikprinzip": "Staatsoberhaupt wird gewählt, keine Monarchie.",
+            "Ultra-vires-Doktrin": "Prüfung, ob EU-Organe ihre Kompetenzen überschritten haben.",
+            "Interessenaggregation": "Bündelung verschiedener gesellschaftlicher Interessen durch Parteien.",
+            "Politische Sozialisation": "Vermittlung von politischen Werten und Normen an die Bürger.",
+            "Rekrutierung": "Auswahl und Aufbau von politischem Personal (Kandidaten für Ämter).",
+            "Magisches Viereck": "Ziele der Wirtschaftspolitik: Preisniveaustabilität, hoher Beschäftigungsstand, stetiges Wirtschaftswachstum, außenwirtschaftliches Gleichgewicht.",
+            "Soziale Marktwirtschaft": "Wirtschaftsordnung der BRD: Freier Markt kombiniert mit sozialem Ausgleich.",
+            "Tarifautonomie": "Recht von Gewerkschaften und Arbeitgeberverbänden, Arbeits- und Wirtschaftsbedingungen (z.B. Löhne) unabhängig vom Staat auszuhandeln.",
+            "Globalisierung": "Zunehmende weltweite Verflechtung in Wirtschaft, Politik, Kultur und Umwelt."
+        };
+
+        function processLernzettelContent(html) {
+            let processed = html;
             
-            accordionContainer.innerHTML += `
-                <div class="accordion" id="acc_${topic.id}">
-                    <div class="accordion-header" onclick="toggleAccordion('${topic.id}')">
-                        <span>${topic.badge} – ${topic.title}</span>
-                        <svg class="accordion-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            // 1. Process Glossary Terms
+            for (const [term, definition] of Object.entries(glossary)) {
+                const regex = new RegExp(`\\b(${term})\\b(?![^<]*>)`, 'g');
+                processed = processed.replace(regex, `<span class="glossary-term">$1<span class="glossary-tooltip">${definition}</span></span>`);
+            }
+            
+            // 2. Process Lists into Interactive Checkboxes
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = processed;
+            
+            const listItems = tempDiv.querySelectorAll('li');
+            listItems.forEach((li) => {
+                const inner = li.innerHTML;
+                li.innerHTML = `<div class="li-checkbox"></div><span>${inner}</span>`;
+                li.className = 'interactive-li';
+                li.setAttribute('onclick', 'toggleLi(this)');
+            });
+            
+            return tempDiv.innerHTML;
+        }
+
+        function toggleLi(element) {
+            element.classList.toggle('checked');
+        }
+
+        function toggleActiveRecall(topicId) {
+            const contentBody = document.querySelector(`#acc_${topicId} .content-body`);
+            if (contentBody) {
+                contentBody.classList.toggle('active-recall-mode');
+                const btn = document.getElementById(`btn-recall-${topicId}`);
+                if (contentBody.classList.contains('active-recall-mode')) {
+                    btn.classList.add('btn-primary');
+                    btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg> Active Recall: AN';
+                } else {
+                    btn.classList.remove('btn-primary');
+                    btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg> Active Recall Modus';
+                }
+            }
+        }
+
+        function initLernzettel() {
+            const accordionContainer = document.getElementById('accordion-container');
+            accordionContainer.innerHTML = '';
+            
+            topics.forEach(topic => {
+                let rawContent = lernzettelContent[topic.id] || '<div class="content-body"><p style="color: var(--subtext);">Inhalt folgt in der nächsten Iteration.</p></div>';
+                const processedContent = processLernzettelContent(rawContent);
+                
+                const toolbar = `
+                    <div class="lz-toolbar">
+                        <button id="btn-recall-${topic.id}" class="btn" onclick="toggleActiveRecall('${topic.id}')">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                            Active Recall Modus
+                        </button>
+                        <button class="btn" onclick="navigate('lueckentext'); document.getElementById('lt-topic-select').value = '${topic.id}'; generateLueckentext();">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                            Als Lückentext üben
+                        </button>
                     </div>
-                    <div class="accordion-content">
-                        ${content}
-                        <div class="actions">
-                            <button class="btn btn-success" onclick="markLearned('${topic.id}')">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                                Als gelernt markieren
-                            </button>
-                            <button class="btn btn-primary" onclick="navigate('quiz')">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-                                Zum Quiz
-                            </button>
-                            <button class="btn" onclick="navigate('karteikarten')">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
-                                Karteikarten
-                            </button>
+                `;
+
+                accordionContainer.innerHTML += `
+                    <div class="accordion" id="acc_${topic.id}">
+                        <div class="accordion-header" onclick="toggleAccordion('${topic.id}')">
+                            <span>${topic.badge} – ${topic.title}</span>
+                            <svg class="accordion-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </div>
+                        <div class="accordion-content">
+                            ${toolbar}
+                            ${processedContent}
+                            <div class="actions" style="margin-top: 2rem;">
+                                <button class="btn btn-success" onclick="markLearned('${topic.id}')">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                    Als gelernt markieren
+                                </button>
+                                <button class="btn btn-primary" onclick="navigate('quiz')">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                                    Zum Quiz
+                                </button>
+                                <button class="btn" onclick="navigate('karteikarten')">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+                                    Karteikarten
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            `;
-        });
+                `;
+            });
+        }
 
         function toggleAccordion(id, forceOpen = false) {
             const acc = document.getElementById('acc_' + id);
@@ -6624,36 +6694,82 @@
             
             document.getElementById('stat-cards').innerText = userProgress.cardsViewed;
 
-            // Render Streak (last 7 days)
+            // Render Streak (Scrollable Calendar)
             const streakContainer = document.getElementById('streak-days-container');
             if(streakContainer) {
                 streakContainer.innerHTML = '';
                 const today = new Date();
-                const days = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
+                today.setHours(0, 0, 0, 0);
                 
-                for (let i = 6; i >= 0; i--) {
-                    const d = new Date(today);
-                    d.setDate(today.getDate() - i);
-                    const dateStr = d.toISOString().split('T')[0];
-                    const dayName = days[d.getDay()];
-                    const shortDate = `${d.getDate()}.${d.getMonth() + 1}.`;
+                const examDate = new Date('2026-04-17T00:00:00');
+                
+                // Start 30 days ago
+                const startDate = new Date(today);
+                startDate.setDate(today.getDate() - 30);
+
+                const days = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
+                let currentDate = new Date(startDate);
+                let todayElement = null;
+                
+                while (currentDate <= examDate) {
+                    const dateStr = currentDate.toISOString().split('T')[0];
+                    const dayName = days[currentDate.getDay()];
+                    const shortDate = `${currentDate.getDate()}.${currentDate.getMonth() + 1}.`;
                     
-                    const isActive = userProgress.activeDays.includes(dateStr);
+                    const isToday = currentDate.getTime() === today.getTime();
+                    const isExam = currentDate.getTime() === examDate.getTime();
+                    const isActive = userProgress.activeDays && userProgress.activeDays.includes(dateStr);
                     
                     const wrapper = document.createElement('div');
                     wrapper.className = 'streak-day-wrapper';
                     
                     const dayEl = document.createElement('div');
-                    dayEl.className = `streak-day ${isActive ? 'active' : ''}`;
-                    dayEl.innerText = dayName.charAt(0);
+                    dayEl.className = 'streak-day';
+                    if (isActive) dayEl.classList.add('active');
+                    if (isToday) dayEl.classList.add('today');
+                    if (isExam) dayEl.classList.add('exam-day');
+                    
+                    if (isExam) {
+                        dayEl.innerHTML = '🎓';
+                    } else if (isActive) {
+                        dayEl.innerHTML = '✓';
+                    } else {
+                        dayEl.innerText = currentDate.getDate();
+                    }
                     
                     const dateEl = document.createElement('div');
                     dateEl.className = 'streak-date';
-                    dateEl.innerText = shortDate;
+                    if (isExam) {
+                        dateEl.innerText = 'Prüfung';
+                        dateEl.style.color = 'var(--error)';
+                        dateEl.style.fontWeight = 'bold';
+                    } else if (isToday) {
+                        dateEl.innerText = 'Heute';
+                        dateEl.style.color = 'var(--primary)';
+                        dateEl.style.fontWeight = 'bold';
+                    } else {
+                        dateEl.innerText = `${dayName}, ${shortDate}`;
+                    }
 
                     wrapper.appendChild(dayEl);
                     wrapper.appendChild(dateEl);
                     streakContainer.appendChild(wrapper);
+
+                    if (isToday) {
+                        todayElement = wrapper;
+                    }
+
+                    currentDate.setDate(currentDate.getDate() + 1);
+                }
+
+                // Scroll to today
+                if (todayElement) {
+                    setTimeout(() => {
+                        const containerWidth = streakContainer.offsetWidth;
+                        const elementOffset = todayElement.offsetLeft;
+                        const elementWidth = todayElement.offsetWidth;
+                        streakContainer.scrollLeft = elementOffset - (containerWidth / 2) + (elementWidth / 2);
+                    }, 100);
                 }
             }
         }
@@ -6843,7 +6959,8 @@
             addArgument('contra');
         }
 
-        // Initialize flashcards on load
+        // Initialize views on load
+        initLernzettel();
         initFlashcards();
         showQuizSetup(); // Initialize Quiz view state
         initOperatoren(); // Initialize Operatoren view
