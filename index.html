@@ -1820,6 +1820,21 @@
                     <div id="ks-news-ticker" style="display: inline-block; padding-left: 100px; animation: ticker 20s linear infinite; color: var(--text-secondary);">+++ Neue Legislaturperiode beginnt +++</div>
                 </div>
 
+                <!-- NEW: Strategy Advisor & Chart -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                    <div id="ks-advisor-box" style="background: rgba(16, 185, 129, 0.1); border-left: 4px solid #10b981; padding: 15px; border-radius: 8px; font-size: 0.9rem;">
+                        <div style="font-weight: bold; color: #10b981; margin-bottom: 5px; display: flex; align-items: center; gap: 5px;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                            Strategy Advisor AI
+                        </div>
+                        <div id="ks-advisor-text" style="color: var(--text-secondary); line-height: 1.4;">Analysiere Systemstatus...</div>
+                    </div>
+                    <div id="ks-chart-container" style="background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px; height: 120px; position: relative;">
+                        <div style="font-size: 0.8rem; color: var(--subtext); position: absolute; top: 10px; left: 10px;">Trend-Analyse (12 Monate)</div>
+                        <svg id="ks-trend-chart" width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none" style="overflow: visible; padding-top: 20px;"></svg>
+                    </div>
+                </div>
+
                 <div style="display: flex; justify-content: space-between; margin-bottom: 1rem; align-items: center;">
                     <span id="ks-event-type" class="card-badge" style="background: rgba(139, 92, 246, 0.2); color: #c4b5fd;">Normal</span>
                     <span id="ks-month" style="font-weight: bold; color: var(--primary); font-size: 1.2rem;">Monat: 1 / 48</span>
@@ -8082,19 +8097,15 @@
         }
 
         function loadKsEvent() {
-            // Filter available events
-            let available = advancedPoliticalEvents.filter(e => !ksState_v2.usedEvents.includes(e.id));
+            // Use Neural Event System instead of random selection
+            currentKsEvent = getWeightedEvent();
             
-            if (available.length === 0) {
+            if (!currentKsEvent) {
                 // Game Won (or reset)
                 showKsGameOver("Legislaturperiode erfolgreich beendet!", "Du hast die 4 Jahre überstanden. Glückwunsch!", true);
                 return;
             }
 
-            // Pick random event
-            const randIdx = Math.floor(Math.random() * available.length);
-            currentKsEvent = available[randIdx];
-            
             ksState_v2.usedEvents.push(currentKsEvent.id);
             saveKsState();
 
@@ -8124,12 +8135,16 @@
                 btn.onclick = () => handleKsDecision(idx);
                 optsContainer.appendChild(btn);
             });
+
+            // Update Advanced UI Elements
+            updateAdvisor();
+            updateChart();
         }
 
         function handleKsDecision(optIdx) {
             const opt = currentKsEvent.opts[optIdx];
             
-            // Apply effects
+            // Apply immediate effects
             ksState_v2.budget += opt.cost;
             ksState_v2.economy += opt.eff.economy;
             ksState_v2.society += opt.eff.society;
@@ -8138,7 +8153,13 @@
             ksState_v2.coalition += opt.eff.coalition;
             ksState_v2.inflation += opt.eff.inflation;
             
-            // Add news to queue
+            // Apply Macro Effects (Latent & Interdependent)
+            applyMacroEffects();
+            
+            // Generate Procedural News
+            generateNews();
+
+            // Add specific news from option if available
             if (opt.news) {
                 ksState_v2.newsQueue.push(opt.news);
                 if (ksState_v2.newsQueue.length > 10) ksState_v2.newsQueue.shift(); // Keep max 10
@@ -8207,6 +8228,208 @@
             }
         }
 
+        // --- ADVANCED ENGINE LOGIC ---
+        
+        // 1. Neural Event System (Weighted Graph)
+        function getWeightedEvent() {
+            let available = advancedPoliticalEvents.filter(e => !ksState_v2.usedEvents.includes(e.id));
+            if (available.length === 0) return null;
+
+            // Calculate weights based on current state
+            available.forEach(e => {
+                e.weight = 10; // Base weight
+                
+                // Increase weight for crisis events if metrics are bad
+                if (e.type === "Krise") {
+                    if (e.module === "Wirtschaft & Finanzen" && (ksState_v2.economy < 40 || ksState_v2.inflation > 5)) e.weight += 30;
+                    if (e.module === "Sozialstaat & Demografie" && ksState_v2.society < 40) e.weight += 30;
+                    if (e.module === "Ökologie & Nachhaltigkeit" && ksState_v2.ecology < 40) e.weight += 30;
+                    if (e.module === "Internationale Beziehungen" && ksState_v2.international < 40) e.weight += 30;
+                }
+                
+                // Markov Chain Logic: Increase weight if related events were played recently
+                const recentEvents = ksState_v2.usedEvents.slice(-3);
+                recentEvents.forEach(recentId => {
+                    const recentEvent = advancedPoliticalEvents.find(ev => ev.id === recentId);
+                    if (recentEvent && recentEvent.module === e.module) {
+                        e.weight += 15; // Thematic continuity
+                    }
+                });
+            });
+
+            // Select based on weights
+            const totalWeight = available.reduce((sum, e) => sum + e.weight, 0);
+            let random = Math.random() * totalWeight;
+            
+            for (let e of available) {
+                random -= e.weight;
+                if (random <= 0) return e;
+            }
+            return available[0];
+        }
+
+        // 2. Macro-Engine (Economic Functions & Feedback Loops)
+        function applyMacroEffects() {
+            // Phillips Curve: Low unemployment (high economy) -> Higher inflation
+            if (ksState_v2.economy > 70) ksState_v2.inflation += 0.2;
+            if (ksState_v2.economy < 40) ksState_v2.inflation -= 0.1;
+
+            // Okun's Law: High growth (economy) -> Lower unemployment (higher society)
+            if (ksState_v2.economy > 60) ksState_v2.society += 2;
+            if (ksState_v2.economy < 40) ksState_v2.society -= 2;
+
+            // Apply latent effects (Sinusoidal decay over time)
+            if (!ksState_v2.latentEffects) ksState_v2.latentEffects = [];
+            
+            let newLatent = [];
+            ksState_v2.latentEffects.forEach(effect => {
+                effect.duration--;
+                if (effect.duration > 0) {
+                    // Calculate impact using a simple decay function
+                    const impact = effect.magnitude * (effect.duration / effect.initialDuration);
+                    ksState_v2[effect.metric] += impact;
+                    newLatent.push(effect);
+                }
+            });
+            ksState_v2.latentEffects = newLatent;
+            
+            // Ensure bounds
+            ['economy', 'society', 'ecology', 'international', 'coalition'].forEach(m => {
+                ksState_v2[m] = Math.max(0, Math.min(100, ksState_v2[m]));
+            });
+            ksState_v2.inflation = Math.max(-5, Math.min(20, ksState_v2.inflation));
+        }
+
+        function addLatentEffect(metric, magnitude, duration) {
+            if (!ksState_v2.latentEffects) ksState_v2.latentEffects = [];
+            ksState_v2.latentEffects.push({
+                metric: metric,
+                magnitude: magnitude,
+                duration: duration,
+                initialDuration: duration
+            });
+        }
+
+        // 3. Strategy Advisor AI
+        function updateAdvisor() {
+            const advisorText = document.getElementById('ks-advisor-text');
+            if (!advisorText) return;
+
+            let advice = [];
+            
+            if (ksState_v2.budget < 10) advice.push("Kritischer Haushalt! Eine Verfassungsklage droht in Kürze.");
+            else if (ksState_v2.budget < 30) advice.push("Budget-Trend negativ. Ausgaben drosseln.");
+            
+            if (ksState_v2.coalition < 30) advice.push("Koalitionspartner extrem unzufrieden. Neuwahlen drohen.");
+            if (ksState_v2.inflation > 6) advice.push("Inflation außer Kontrolle. Kaufkraft sinkt massiv.");
+            if (ksState_v2.economy < 40) advice.push("Wirtschaft schwächelt. Rezessionsgefahr hoch.");
+            if (ksState_v2.society < 40) advice.push("Soziale Spannungen nehmen zu. Proteste möglich.");
+
+            if (advice.length === 0) {
+                advisorText.innerHTML = "System stabil. Aktuell keine akuten Warnungen.";
+                advisorText.style.color = "var(--text-secondary)";
+            } else {
+                advisorText.innerHTML = advice.join('<br>');
+                advisorText.style.color = "var(--error)";
+            }
+        }
+
+        // 4. Procedural News Generation
+        function generateNews() {
+            const subjects = {
+                economy: ["Wirtschaftsverbände", "DAX-Konzerne", "Mittelstand"],
+                society: ["Gewerkschaften", "Sozialverbände", "Bürgerinitiativen"],
+                ecology: ["Umweltaktivisten", "Klimaforscher", "Grüne NGOs"]
+            };
+            
+            const verbsPos = ["loben", "begrüßen", "feiern"];
+            const verbsNeg = ["kritisieren", "warnen vor", "protestieren gegen"];
+            
+            let newsItem = "";
+            
+            if (ksState_v2.economy < 40) {
+                newsItem = `${subjects.economy[Math.floor(Math.random()*3)]} ${verbsNeg[Math.floor(Math.random()*3)]} Regierungskurs: "Standort in Gefahr"`;
+            } else if (ksState_v2.society < 40) {
+                newsItem = `${subjects.society[Math.floor(Math.random()*3)]} ${verbsNeg[Math.floor(Math.random()*3)]} Sozialabbau: Streiks angekündigt`;
+            } else if (ksState_v2.economy > 70) {
+                newsItem = `${subjects.economy[Math.floor(Math.random()*3)]} ${verbsPos[Math.floor(Math.random()*3)]} Aufschwung: Rekordgewinne erwartet`;
+            } else {
+                newsItem = "Aktuelle Umfragen: Regierungskoalition stabilisiert sich.";
+            }
+            
+            ksState_v2.newsQueue.push(newsItem);
+            if (ksState_v2.newsQueue.length > 10) ksState_v2.newsQueue.shift();
+        }
+
+        // 5. Black Swan Events
+        function checkBlackSwan() {
+            if (Math.random() < 0.05) { // 5% chance per turn
+                const swans = [
+                    { title: "Globale Pandemie", desc: "Ein neues Virus legt die Weltwirtschaft lahm.", eff: { economy: -30, society: -20, budget: -40, inflation: 2 } },
+                    { title: "Finanzkrise 2.0", desc: "Eine Großbank kollabiert, die Märkte stürzen ab.", eff: { economy: -40, budget: -30, inflation: -2 } },
+                    { title: "Energie-Schock", desc: "Ein geopolitischer Konflikt lässt Energiepreise explodieren.", eff: { economy: -20, inflation: 5, society: -15 } }
+                ];
+                const swan = swans[Math.floor(Math.random() * swans.length)];
+                
+                ksState_v2.economy += swan.eff.economy || 0;
+                ksState_v2.society += swan.eff.society || 0;
+                ksState_v2.budget += swan.eff.budget || 0;
+                ksState_v2.inflation += swan.eff.inflation || 0;
+                
+                ksState_v2.newsQueue.push(`+++ BLACK SWAN: ${swan.title} +++`);
+                alert(`⚠️ SCHWARZER SCHWAN: ${swan.title}\n${swan.desc}\nMassive Auswirkungen auf Wirtschaft und Gesellschaft!`);
+            }
+        }
+
+        // 6. High-End Visualisierung (SVG Data-Viz)
+        function updateChart() {
+            if (!ksState_v2.history) ksState_v2.history = { economy: [], society: [], ecology: [] };
+            
+            ksState_v2.history.economy.push(ksState_v2.economy);
+            ksState_v2.history.society.push(ksState_v2.society);
+            ksState_v2.history.ecology.push(ksState_v2.ecology);
+            
+            // Keep only last 12 months
+            if (ksState_v2.history.economy.length > 12) {
+                ksState_v2.history.economy.shift();
+                ksState_v2.history.society.shift();
+                ksState_v2.history.ecology.shift();
+            }
+
+            const svg = document.getElementById('ks-trend-chart');
+            if (!svg) return;
+            
+            svg.innerHTML = ''; // Clear existing
+            
+            const width = 100;
+            const height = 100;
+            const pts = ksState_v2.history.economy.length;
+            if (pts < 2) return;
+
+            const drawLine = (data, color) => {
+                let pathD = `M 0 ${height - (data[0] / 100 * height)}`;
+                for (let i = 1; i < pts; i++) {
+                    const x = (i / (12 - 1)) * width; // Scale to 12 months max
+                    const y = height - (data[i] / 100 * height);
+                    pathD += ` L ${x} ${y}`;
+                }
+                
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                path.setAttribute('d', pathD);
+                path.setAttribute('fill', 'none');
+                path.setAttribute('stroke', color);
+                path.setAttribute('stroke-width', '2');
+                path.setAttribute('vector-effect', 'non-scaling-stroke');
+                svg.appendChild(path);
+            };
+
+            drawLine(ksState_v2.history.economy, '#3b82f6'); // Blue
+            drawLine(ksState_v2.history.society, '#10b981'); // Green
+            drawLine(ksState_v2.history.ecology, '#8b5cf6'); // Purple
+        }
+
+        // --- END ADVANCED ENGINE LOGIC ---
+
         function checkKsGameOver() {
             if (ksState_v2.coalition <= 0) return { isOver: true, title: "KOALITION GEPLATZT", reason: "Dein Koalitionspartner hat das Vertrauen entzogen. Die Regierung ist am Ende." };
             if (ksState_v2.economy <= 0) return { isOver: true, title: "WIRTSCHAFTSKOLLAPS", reason: "Die Wirtschaft ist komplett zusammengebrochen. Massenarbeitslosigkeit und Firmenpleiten." };
@@ -8240,6 +8463,10 @@
 
         function nextKsTurn() {
             ksState_v2.month++;
+            
+            // Check for Black Swan Event at start of turn
+            checkBlackSwan();
+            
             saveKsState();
             document.getElementById('ks-feedback').style.display = 'none';
             document.getElementById('ks-main-card').style.display = 'block';
