@@ -872,15 +872,16 @@
             scroll-behavior: smooth;
         }
         .streak-days::-webkit-scrollbar {
-            height: 8px;
+            height: 10px;
         }
         .streak-days::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
         }
         .streak-days::-webkit-scrollbar-thumb {
             background: var(--primary);
-            border-radius: 4px;
+            border-radius: 5px;
+            border: 2px solid var(--card-bg);
         }
         .streak-day-wrapper {
             display: flex;
@@ -975,6 +976,10 @@
             filter: blur(0);
             background: rgba(255,255,255,0.05);
         }
+        .active-recall-mode li.revealed {
+            filter: blur(0);
+            background: rgba(255,255,255,0.1);
+        }
         .active-recall-mode h4 {
             color: var(--primary);
         }
@@ -1053,6 +1058,35 @@
             color: var(--error);
         }
 
+        /* --- Word Bank Styles --- */
+        .word-bank {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+        .word-chip {
+            background: rgba(139, 92, 246, 0.15);
+            color: #c4b5fd;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            transition: all 0.2s ease;
+        }
+        .word-chip.used {
+            text-decoration: line-through;
+            opacity: 0.3;
+            background: transparent;
+            border-color: var(--border);
+            color: var(--subtext);
+        }
+
         /* --- Modal & Toast --- */
         .modal-overlay {
             position: fixed;
@@ -1072,6 +1106,171 @@
             padding: 2rem;
             border-radius: 12px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .search-container {
+            position: relative;
+            margin-bottom: 24px;
+        }
+        .search-input {
+            width: 100%;
+            background: var(--card-bg-glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 16px 20px 16px 48px;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 142, 247, 0.2);
+        }
+        .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--subtext);
+            pointer-events: none;
+        }
+
+        /* --- Lernspiele Styles --- */
+        .game-menu-card {
+            text-align: center;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .game-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+        }
+        .game-container {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .game-scenario {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(255,255,255,0.05);
+            border-left: 4px solid var(--primary);
+            border-radius: 0 8px 8px 0;
+        }
+        .sort-buckets {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+        .sort-bucket {
+            flex: 1;
+            min-width: 200px;
+            padding: 1.5rem;
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        .sort-bucket:hover {
+            border-color: var(--primary);
+            background: rgba(79, 142, 247, 0.1);
+        }
+        .sort-item {
+            font-size: 1.25rem;
+            font-weight: 600;
+            padding: 2.5rem 2rem;
+            background: var(--primary);
+            color: white;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            line-height: 1.5;
+        }
+
+        /* Kanzler-Simulator Styles */
+        .ks-dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+        }
+        .ks-metric {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .ks-metric-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .ks-bar {
+            width: 100%;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .ks-fill {
+            height: 100%;
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.8s ease;
+        }
+        .impact-badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .impact-pos { background: rgba(74, 222, 128, 0.15); color: #4ade80; }
+        .impact-neg { background: rgba(248, 113, 113, 0.15); color: #f87171; }
+        .impact-neu { background: rgba(156, 163, 175, 0.15); color: #9ca3af; }
+
+        @keyframes ticker {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        /* --- Responsive Adjustments --- */
+        @media (min-width: 769px) and (max-width: 1100px) {
+            nav {
+                width: 220px;
+            }
+            nav a {
+                padding: 12px 16px;
+                font-size: 0.9rem;
+            }
+            main {
+                padding: 30px 20px;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
 
         /* Mobile */
@@ -1150,6 +1349,10 @@
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.439 7.85c-.049.322.059.648.289.878l1.568 1.568c.47.47.706 1.087.706 1.704s-.235 1.233-.706 1.704l-1.611 1.611a.98.98 0 0 0-.253.902l.361 1.579c.178.773-.036 1.576-.587 2.128-.552.551-1.355.765-2.128.587l-1.579-.361a.98.98 0 0 0-.902.253l-1.611 1.611c-.47.47-1.087.706-1.704.706s-1.233-.235-1.704-.706l-1.568-1.568a.98.98 0 0 0-.878-.289l-1.579.361c-.773.178-1.576-.036-2.128-.587-.551-.552-.765-1.355-.587-2.128l.361-1.579a.98.98 0 0 0-.253-.902L1.568 13.704c-.47-.47-.706-1.087-.706-1.704s.235-1.233.706-1.704l1.611-1.611a.98.98 0 0 0 .253-.902L3.071 6.204c-.178-.773.036-1.576.587-2.128.552-.551 1.355-.765 2.128-.587l1.579.361c.322.049.648-.059.878-.289l1.568-1.568c.47-.47 1.087-.706 1.704-.706s1.233.235 1.704.706l1.611 1.611c.229.229.555.338.878.289l1.579-.361c.773-.178 1.576.036 2.128.587.551.552.765 1.355.587 2.128l-.361 1.579z"></path></svg>
             Lückentext
         </a>
+        <a onclick="navigate('lernspiele')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+            Lernspiele
+        </a>
         <a onclick="navigate('fortschritt')">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
             Fortschritt
@@ -1168,6 +1371,11 @@
                     <div class="countdown-title">Zeit bis zur Prüfung</div>
                     <div class="countdown-timer" id="timer">Lade...</div>
                 </div>
+            </div>
+
+            <div class="search-container">
+                <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" id="dashboard-search" class="search-input" placeholder="Suche nach Themen, Begriffen oder Stichwörtern..." onkeyup="filterDashboardTopics()">
             </div>
 
             <h3 class="section-title">Themenfelder Übersicht</h3>
@@ -1483,6 +1691,10 @@
                 </div>
             </div>
 
+            <div id="lt-wordbank" class="word-bank" style="display: none;">
+                <!-- Word chips go here -->
+            </div>
+
             <div id="lt-container" class="card" style="display: none; line-height: 2.2; font-size: 1.1rem;">
                 <!-- Generated Content -->
             </div>
@@ -1490,6 +1702,143 @@
             <div id="lt-actions" style="display: none; margin-top: 1.5rem; justify-content: flex-end; gap: 1rem;">
                 <button class="btn" onclick="revealLueckentext()">Lösungen anzeigen</button>
                 <button class="btn btn-primary" onclick="checkLueckentext()">Prüfen</button>
+            </div>
+        </div>
+
+        <div id="lernspiele" class="view">
+            <h2>Lernspiele</h2>
+            <p class="subtitle">Spielerisch auf Abitur-Niveau trainieren</p>
+            
+            <div id="games-menu" class="grid">
+                <div class="card game-menu-card" onclick="startGame('wirtschaft')" style="cursor: pointer;">
+                    <div class="game-icon">📈</div>
+                    <h3>Wirtschafts-Weichensteller</h3>
+                    <p style="color: var(--subtext); margin-top: 0.5rem; font-size: 0.95rem;">Triff als Krisenmanager wirtschaftspolitische Entscheidungen (Keynes vs. Neoklassik).</p>
+                </div>
+                <div class="card game-menu-card" onclick="startGame('sortierer')" style="cursor: pointer;">
+                    <div class="game-icon">🗂️</div>
+                    <h3>Theorien-Sortierer</h3>
+                    <p style="color: var(--subtext); margin-top: 0.5rem; font-size: 0.95rem;">Ordne komplexe Maßnahmen und Zitate den richtigen Theorien und Institutionen zu.</p>
+                </div>
+                <div class="card game-menu-card" onclick="startGame('detektiv')" style="cursor: pointer;">
+                    <div class="game-icon">🕵️</div>
+                    <h3>Verfassungs-Detektiv</h3>
+                    <p style="color: var(--subtext); margin-top: 0.5rem; font-size: 0.95rem;">Finde heraus, gegen welche Grundgesetz-Artikel in fiktiven Fallbeispielen verstoßen wird.</p>
+                </div>
+                <div class="card game-menu-card" onclick="startGame('kanzler')" style="cursor: pointer; background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(217, 70, 239, 0.1) 100%); border-color: rgba(217, 70, 239, 0.3);">
+                    <div class="game-icon">🏛️</div>
+                    <h3>Kanzler-Simulator: Krisenkabinett</h3>
+                    <p style="color: var(--subtext); margin-top: 0.5rem; font-size: 0.95rem;">Das ultimative Abitur-Spiel. Meistere vernetzte Krisen aus allen Halbjahren (Q1-Q3)!</p>
+                </div>
+            </div>
+
+            <!-- Game 1: Wirtschaft -->
+            <div id="game-wirtschaft" class="game-container" style="display: none;">
+                <button class="btn" style="margin-bottom: 1.5rem;" onclick="exitGame()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                    Zurück zur Auswahl
+                </button>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 1rem; align-items: center;">
+                    <span class="card-badge">Q2.1 / Q2.2</span>
+                    <span id="gw-score" style="font-weight: bold; color: var(--primary); font-size: 1.2rem;">Punkte: 0</span>
+                </div>
+                <div id="gw-scenario" class="game-scenario">Szenario lädt...</div>
+                <div id="gw-options" class="quiz-options"></div>
+            </div>
+
+            <!-- Game 2: Sortierer -->
+            <div id="game-sortierer" class="game-container" style="display: none;">
+                <button class="btn" style="margin-bottom: 1.5rem;" onclick="exitGame()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                    Zurück zur Auswahl
+                </button>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 1rem; align-items: center;">
+                    <span class="card-badge">Theorien & Konzepte</span>
+                    <span id="gs-score" style="font-weight: bold; color: var(--primary); font-size: 1.2rem;">Punkte: 0</span>
+                </div>
+                <div id="gs-item" class="sort-item">Item lädt...</div>
+                <div id="gs-buckets" class="sort-buckets"></div>
+            </div>
+
+            <!-- Game 3: Detektiv -->
+            <div id="game-detektiv" class="game-container" style="display: none;">
+                <button class="btn" style="margin-bottom: 1.5rem;" onclick="exitGame()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                    Zurück zur Auswahl
+                </button>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 1rem; align-items: center;">
+                    <span class="card-badge">Q1.1 Verfassung</span>
+                    <span id="gd-score" style="font-weight: bold; color: var(--primary); font-size: 1.2rem;">Punkte: 0</span>
+                </div>
+                <div id="gd-scenario" class="game-scenario">Fall lädt...</div>
+                <div id="gd-options" class="quiz-options"></div>
+            </div>
+
+            <!-- Game 4: Kanzler-Simulator -->
+            <div id="game-kanzler" class="game-container" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <button class="btn" onclick="exitGame()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                        Zurück zur Auswahl
+                    </button>
+                    <button class="btn btn-secondary" onclick="initKanzlerSimulator(true)">Neu starten</button>
+                </div>
+                
+                <div class="ks-dashboard">
+                    <div class="ks-metric">
+                        <div class="ks-metric-header"><span>💰 Budget</span> <span id="ks-val-budget">50</span></div>
+                        <div class="ks-bar"><div class="ks-fill" id="ks-bar-budget" style="width: 50%; background: var(--warning);"></div></div>
+                    </div>
+                    <div class="ks-metric">
+                        <div class="ks-metric-header"><span>🤝 Koalition</span> <span id="ks-val-coalition">100%</span></div>
+                        <div class="ks-bar"><div class="ks-fill" id="ks-bar-coalition" style="width: 100%; background: var(--success);"></div></div>
+                    </div>
+                    <div class="ks-metric">
+                        <div class="ks-metric-header"><span>📈 Wirtschaft</span> <span id="ks-val-economy">50%</span></div>
+                        <div class="ks-bar"><div class="ks-fill" id="ks-bar-economy" style="width: 50%; background: var(--warning);"></div></div>
+                    </div>
+                    <div class="ks-metric">
+                        <div class="ks-metric-header"><span>👥 Gesellschaft</span> <span id="ks-val-society">50%</span></div>
+                        <div class="ks-bar"><div class="ks-fill" id="ks-bar-society" style="width: 50%; background: var(--warning);"></div></div>
+                    </div>
+                    <div class="ks-metric">
+                        <div class="ks-metric-header"><span>🌱 Ökologie</span> <span id="ks-val-ecology">50%</span></div>
+                        <div class="ks-bar"><div class="ks-fill" id="ks-bar-ecology" style="width: 50%; background: var(--warning);"></div></div>
+                    </div>
+                    <div class="ks-metric">
+                        <div class="ks-metric-header"><span>🌍 International</span> <span id="ks-val-international">50%</span></div>
+                        <div class="ks-bar"><div class="ks-fill" id="ks-bar-international" style="width: 50%; background: var(--warning);"></div></div>
+                    </div>
+                    <div class="ks-metric" style="justify-content: center; align-items: center; background: rgba(0,0,0,0.2); border-radius: 8px; padding: 5px;">
+                        <div style="font-size: 0.8rem; color: var(--subtext);">Inflation</div>
+                        <div id="ks-val-inflation" style="font-size: 1.5rem; font-weight: bold; color: var(--error);">2.0%</div>
+                    </div>
+                </div>
+
+                <div class="ks-news-ticker-container" style="overflow: hidden; background: var(--surface); border: 1px solid var(--border); padding: 8px; border-radius: 8px; margin-bottom: 20px; white-space: nowrap; position: relative;">
+                    <div style="position: absolute; left: 0; top: 0; bottom: 0; background: var(--primary); color: white; padding: 8px 15px; font-weight: bold; z-index: 2;">NEWS</div>
+                    <div id="ks-news-ticker" style="display: inline-block; padding-left: 100px; animation: ticker 20s linear infinite; color: var(--text-secondary);">+++ Neue Legislaturperiode beginnt +++</div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; margin-bottom: 1rem; align-items: center;">
+                    <span id="ks-event-type" class="card-badge" style="background: rgba(139, 92, 246, 0.2); color: #c4b5fd;">Normal</span>
+                    <span id="ks-month" style="font-weight: bold; color: var(--primary); font-size: 1.2rem;">Monat: 1 / 48</span>
+                </div>
+
+                <div id="ks-main-card">
+                    <div id="ks-scenario" class="game-scenario" style="border-left-color: #8b5cf6;">Lade Akte...</div>
+                    <button class="btn btn-secondary" id="ks-memo-btn" style="margin-bottom: 15px; width: 100%; justify-content: center; border: 1px solid #3b82f6; color: #3b82f6;" onclick="document.getElementById('ks-memo-box').style.display = 'block'; this.style.display='none';">📄 Experten-Briefing lesen</button>
+                    <div id="ks-memo-box" style="display: none; background: rgba(59, 130, 246, 0.1); border-left: 4px solid #3b82f6; padding: 15px; margin-bottom: 15px; border-radius: 4px; font-size: 0.95rem; line-height: 1.6;"></div>
+                    <div id="ks-options" class="quiz-options" style="grid-template-columns: 1fr;"></div>
+                </div>
+
+                <!-- Feedback Modal for Kanzler Simulator -->
+                <div id="ks-feedback" style="display: none; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px; margin-top: 20px; animation: slideUp 0.4s ease-out;">
+                    <h3 id="ks-feedback-title" style="margin-top: 0; margin-bottom: 10px; display: flex; align-items: center; gap: 10px;"></h3>
+                    <p id="ks-feedback-text" style="color: var(--text-secondary); line-height: 1.6; margin-bottom: 20px;"></p>
+                    <div id="ks-feedback-impacts" style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;"></div>
+                    <button class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="nextKsTurn()">Nächster Monat ➔</button>
+                </div>
             </div>
         </div>
 
@@ -1857,23 +2206,23 @@
         };
 
         // Initialize Dashboard
-        const grid = document.getElementById('topics-grid');
-        topics.forEach(topic => {
+        function renderTopicCard(topic, container) {
             const savedStatus = localStorage.getItem('status_' + topic.id);
-            if(savedStatus) topic.status = parseInt(savedStatus);
+            let currentStatus = topic.status;
+            if(savedStatus) currentStatus = parseInt(savedStatus);
 
             let color = 'var(--error)';
             let statusText = 'Nicht begonnen';
-            if (topic.status > 0 && topic.status < 100) {
+            if (currentStatus > 0 && currentStatus < 100) {
                 color = 'var(--warning)';
                 statusText = 'In Bearbeitung';
             }
-            if (topic.status === 100) {
+            if (currentStatus === 100) {
                 color = 'var(--success)';
                 statusText = 'Abgeschlossen';
             }
 
-            grid.innerHTML += `
+            container.innerHTML += `
                 <div class="card" onclick="navigate('lernzettel'); setTimeout(() => toggleAccordion('${topic.id}', true), 100)" style="cursor: pointer;">
                     <div class="card-header">
                         <span class="card-badge">${topic.badge}</span>
@@ -1882,14 +2231,50 @@
                     <div class="progress-container">
                         <div class="progress-text">
                             <span>${statusText}</span>
-                            <span>${topic.status}%</span>
+                            <span>${currentStatus}%</span>
                         </div>
                         <div class="progress-bar">
-                            <div class="progress-fill" style="width: ${topic.status}%; background-color: ${color};"></div>
+                            <div class="progress-fill" style="width: ${currentStatus}%; background-color: ${color};"></div>
                         </div>
                     </div>
                 </div>
             `;
+        }
+
+        function filterDashboardTopics() {
+            const query = document.getElementById('dashboard-search').value.toLowerCase();
+            const grid = document.getElementById('topics-grid');
+            grid.innerHTML = '';
+            
+            let foundAny = false;
+
+            topics.forEach(topic => {
+                const titleMatch = topic.title.toLowerCase().includes(query);
+                const badgeMatch = topic.badge.toLowerCase().includes(query);
+                
+                let contentMatch = false;
+                const content = lernzettelContent[topic.id];
+                if (content) {
+                    const textContent = content.replace(/<[^>]*>?/gm, '').toLowerCase();
+                    if (textContent.includes(query)) {
+                        contentMatch = true;
+                    }
+                }
+
+                if (titleMatch || badgeMatch || contentMatch) {
+                    foundAny = true;
+                    renderTopicCard(topic, grid);
+                }
+            });
+
+            if (!foundAny) {
+                grid.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--subtext);">Keine Ergebnisse für "${document.getElementById('dashboard-search').value}" gefunden.</div>`;
+            }
+        }
+
+        const grid = document.getElementById('topics-grid');
+        topics.forEach(topic => {
+            renderTopicCard(topic, grid);
         });
 
         const glossary = {
@@ -1934,14 +2319,27 @@
                 const inner = li.innerHTML;
                 li.innerHTML = `<div class="li-checkbox"></div><span>${inner}</span>`;
                 li.className = 'interactive-li';
-                li.setAttribute('onclick', 'toggleLi(this)');
+                li.setAttribute('onclick', 'toggleLi(this, event)');
             });
             
             return tempDiv.innerHTML;
         }
 
-        function toggleLi(element) {
-            element.classList.toggle('checked');
+        function toggleLi(element, event) {
+            const parent = element.closest('.content-body');
+            const isRecall = parent && parent.classList.contains('active-recall-mode');
+            
+            // If clicking specifically on the checkbox
+            if (event && event.target.classList.contains('li-checkbox')) {
+                element.classList.toggle('checked');
+                return;
+            }
+
+            if (isRecall) {
+                element.classList.toggle('revealed');
+            } else {
+                element.classList.toggle('checked');
+            }
         }
 
         function toggleActiveRecall(topicId) {
@@ -1967,6 +2365,8 @@
                 let rawContent = lernzettelContent[topic.id] || '<div class="content-body"><p style="color: var(--subtext);">Inhalt folgt in der nächsten Iteration.</p></div>';
                 const processedContent = processLernzettelContent(rawContent);
                 
+                const isLearned = localStorage.getItem('status_' + topic.id) === '100';
+                
                 const toolbar = `
                     <div class="lz-toolbar">
                         <button id="btn-recall-${topic.id}" class="btn" onclick="toggleActiveRecall('${topic.id}')">
@@ -1990,9 +2390,9 @@
                             ${toolbar}
                             ${processedContent}
                             <div class="actions" style="margin-top: 2rem;">
-                                <button class="btn btn-success" onclick="markLearned('${topic.id}')">
+                                <button class="btn ${isLearned ? 'btn-primary' : 'btn-success'}" onclick="markLearned('${topic.id}')">
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                                    Als gelernt markieren
+                                    ${isLearned ? 'Als ungelernt markieren' : 'Als gelernt markieren'}
                                 </button>
                                 <button class="btn btn-primary" onclick="navigate('quiz')">
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
@@ -2020,18 +2420,24 @@
         }
 
         function markLearned(id) {
-            localStorage.setItem('status_' + id, '100');
+            const currentStatus = localStorage.getItem('status_' + id);
             
-            // Show a nice temporary success state on the button
+            if (currentStatus === '100') {
+                localStorage.removeItem('status_' + id);
+                showToast('Thema als ungelernt markiert', 'info');
+            } else {
+                localStorage.setItem('status_' + id, '100');
+                showToast('Thema als gelernt markiert!', 'success');
+            }
+            
             const btn = window.event ? window.event.currentTarget : null;
             if (btn) {
-                const originalText = btn.innerHTML;
-                btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Gespeichert!';
+                btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Aktualisiert...';
             }
             
             setTimeout(() => {
                 location.reload(); 
-            }, 800);
+            }, 600);
         }
 
         // Flashcards Data & Logic
@@ -2359,6 +2765,123 @@
         "badge": "Q1.1",
         "q": "Die Staatsstrukturprinzipien (Republik, Demokratie, Bundesstaat, Sozialstaat) sind in welchem Artikel des Grundgesetzes verankert? (Nur Zahl eingeben)",
         "a": "20"
+    },
+    {
+        "type": "mc",
+        "topic": "q1_1",
+        "badge": "Q1.1",
+        "q": "Was besagt das 'Widerstandsrecht' gemäß Art. 20 Abs. 4 GG?",
+        "options": [
+            "Jeder darf gegen unliebsame Gesetze demonstrieren",
+            "Gegen jeden, der es unternimmt, die verfassungsmäßige Ordnung zu beseitigen, haben alle Deutschen das Recht zum Widerstand, wenn andere Abhilfe nicht möglich ist",
+            "Das Recht, bei Wahlen gegen die Regierung zu stimmen",
+            "Das Recht der Bundesländer, Bundesgesetze abzulehnen"
+        ],
+        "correct": 1
+    },
+    {
+        "type": "mc",
+        "topic": "q1_1",
+        "badge": "Q1.1",
+        "q": "Welche Funktion hat die Gewaltenteilung primär?",
+        "options": [
+            "Beschleunigung von Entscheidungsprozessen",
+            "Machtbegrenzung und gegenseitige Kontrolle (Checks and Balances)",
+            "Einsparung von Verwaltungskosten",
+            "Stärkung der Position des Bundeskanzlers"
+        ],
+        "correct": 1
+    },
+    {
+        "type": "mc",
+        "topic": "q1_1",
+        "badge": "Q1.1",
+        "q": "Was bedeutet das 'Rechtsstaatsprinzip'?",
+        "options": [
+            "Der Staat darf alles tun, was nicht ausdrücklich verboten ist",
+            "Alle staatliche Macht ist an Recht und Gesetz gebunden",
+            "Nur Juristen dürfen politische Ämter bekleiden",
+            "Gesetze können jederzeit rückwirkend geändert werden"
+        ],
+        "correct": 1
+    },
+    {
+        "type": "mc",
+        "topic": "q1_1",
+        "badge": "Q1.1",
+        "q": "Was ist der Unterschied zwischen Bürgerrechten und Menschenrechten?",
+        "options": [
+            "Es gibt keinen Unterschied",
+            "Menschenrechte gelten für alle, Bürgerrechte nur für deutsche Staatsangehörige (z.B. Art. 8, 9, 12 GG)",
+            "Bürgerrechte gelten nur für Erwachsene",
+            "Menschenrechte sind weniger wichtig als Bürgerrechte"
+        ],
+        "correct": 1
+    },
+    {
+        "type": "mc",
+        "topic": "q1_1",
+        "badge": "Q1.1",
+        "q": "Welches Organ entscheidet in Deutschland über die Verfassungswidrigkeit von Parteien?",
+        "options": [
+            "Der Bundestag",
+            "Der Bundespräsident",
+            "Das Bundesverfassungsgericht",
+            "Der Bundesrat"
+        ],
+        "correct": 2
+    },
+    {
+        "type": "text",
+        "topic": "q1_1",
+        "badge": "Q1.1",
+        "q": "In welchem Artikel des Grundgesetzes ist die Unantastbarkeit der Menschenwürde festgeschrieben? (Nur Zahl)",
+        "a": "1"
+    },
+    {
+        "type": "text",
+        "topic": "q1_1",
+        "badge": "Q1.1",
+        "q": "Welches Prinzip besagt, dass alles staatliche Handeln an Recht und Gesetz gebunden ist?",
+        "a": "Rechtsstaatsprinzip"
+    },
+    {
+        "type": "matching",
+        "topic": "q1_1",
+        "badge": "Q1.1",
+        "q": "Ordne die Staatsstrukturprinzipien ihren Bedeutungen zu.",
+        "pairs": [
+            { "left": "Demokratie", "right": "Volkssouveränität & Wahlen" },
+            { "left": "Sozialstaat", "right": "Soziale Gerechtigkeit & Sicherheit" },
+            { "left": "Bundesstaat", "right": "Föderalismus (Bund & Länder)" },
+            { "left": "Republik", "right": "Gewähltes Staatsoberhaupt" }
+        ]
+    },
+    {
+        "type": "mc",
+        "topic": "q1_1",
+        "badge": "Q1.1",
+        "q": "Was ist die 'Ewigkeitsklausel' (Art. 79 Abs. 3 GG)?",
+        "options": [
+            "Ein Gesetz, das besagt, dass das GG ewig gilt",
+            "Das Verbot, die Grundsätze der Art. 1 und 20 GG zu ändern",
+            "Die Regelung, dass der Bundeskanzler ewig im Amt bleiben darf",
+            "Das Recht auf ewiges Leben"
+        ],
+        "correct": 1
+    },
+    {
+        "type": "mc",
+        "topic": "q1_1",
+        "badge": "Q1.1",
+        "q": "Was bedeutet 'Volkssouveränität'?",
+        "options": [
+            "Der König herrscht über das Volk",
+            "Alle Staatsgewalt geht vom Volke aus",
+            "Das Volk darf alles tun, was es will",
+            "Nur das Volk darf Gesetze schreiben"
+        ],
+        "correct": 1
     },
     {
         "type": "mc",
@@ -3468,6 +3991,123 @@
         "badge": "Q2.1",
         "q": "Wie nennt man die Phase des Konjunkturzyklus, in der die Wirtschaft stark wächst und die Kapazitäten voll ausgelastet sind?",
         "a": "Boom"
+    },
+    {
+        "type": "mc",
+        "topic": "q2_1",
+        "badge": "Q2.1",
+        "q": "Wer gilt als Hauptvertreter des Monetarismus?",
+        "options": [
+            "John Maynard Keynes",
+            "Milton Friedman",
+            "Adam Smith",
+            "Karl Marx"
+        ],
+        "correct": 1
+    },
+    {
+        "type": "mc",
+        "topic": "q2_1",
+        "badge": "Q2.1",
+        "q": "Was ist das primäre Ziel der angebotsorientierten Wirtschaftspolitik?",
+        "options": [
+            "Stärkung der Kaufkraft der Konsumenten",
+            "Verbesserung der Rahmenbedingungen für Unternehmen (Investitionsanreize)",
+            "Erhöhung der Staatsausgaben",
+            "Verstaatlichung von Schlüsselindustrien"
+        ],
+        "correct": 1
+    },
+    {
+        "type": "mc",
+        "topic": "q2_1",
+        "badge": "Q2.1",
+        "q": "Was besagt das Say'sche Theorem?",
+        "options": [
+            "Die Nachfrage schafft sich ihr Angebot",
+            "Jedes Angebot schafft sich seine Nachfrage",
+            "Preise sind nach unten starr",
+            "Der Staat muss die Nachfrage steuern"
+        ],
+        "correct": 1
+    },
+    {
+        "type": "mc",
+        "topic": "q2_1",
+        "badge": "Q2.1",
+        "q": "Was versteht man unter 'Crowding-out'?",
+        "options": [
+            "Die Verdrängung privater Nachfrage durch staatliche Nachfrage (über Zinssteigerungen)",
+            "Das Verlassen des Marktes durch unproduktive Firmen",
+            "Die Erhöhung der Arbeitslosigkeit durch Maschinen",
+            "Die Abwanderung von Unternehmen ins Ausland"
+        ],
+        "correct": 0
+    },
+    {
+        "type": "mc",
+        "topic": "q2_1",
+        "badge": "Q2.1",
+        "q": "Was stellt die Laffer-Kurve dar?",
+        "options": [
+            "Den Zusammenhang zwischen Inflation und Arbeitslosigkeit",
+            "Den Zusammenhang zwischen Steuersatz und Steuereinnahmen",
+            "Den Konjunkturverlauf über 10 Jahre",
+            "Die Verteilung des Einkommens in einer Gesellschaft"
+        ],
+        "correct": 1
+    },
+    {
+        "type": "text",
+        "topic": "q2_1",
+        "badge": "Q2.1",
+        "q": "Wie nennt man die Politik der Nachfragesteuerung nach Keynes, bei der der Staat in der Krise Schulden aufnimmt?",
+        "a": "Deficit Spending"
+    },
+    {
+        "type": "text",
+        "topic": "q2_1",
+        "badge": "Q2.1",
+        "q": "Welcher Ökonom forderte eine stetige, an das Potenzialwachstum gebundene Geldmengensteuerung?",
+        "a": "Milton Friedman"
+    },
+    {
+        "type": "matching",
+        "topic": "q2_1",
+        "badge": "Q2.1",
+        "q": "Ordne die wirtschaftspolitischen Konzepte ihren Merkmalen zu.",
+        "pairs": [
+            { "left": "Keynesianismus", "right": "Nachfrageorientierung" },
+            { "left": "Monetarismus", "right": "Geldmengensteuerung" },
+            { "left": "Angebotspolitik", "right": "Deregulierung & Steuersenkung" },
+            { "left": "Fiskalismus", "right": "Eingriff über Staatsausgaben" }
+        ]
+    },
+    {
+        "type": "mc",
+        "topic": "q2_1",
+        "badge": "Q2.1",
+        "q": "Was ist 'antizyklische Fiskalpolitik'?",
+        "options": [
+            "Der Staat spart in der Krise und gibt im Boom aus",
+            "Der Staat erhöht Ausgaben in der Krise und spart im Boom",
+            "Der Staat hält seine Ausgaben immer konstant",
+            "Der Staat passt seine Ausgaben dem Ausland an"
+        ],
+        "correct": 1
+    },
+    {
+        "type": "mc",
+        "topic": "q2_1",
+        "badge": "Q2.1",
+        "q": "Was ist ein häufiger Kritikpunkt am Monetarismus?",
+        "options": [
+            "Er führt zu zu viel Staatsverschuldung",
+            "Die Vernachlässigung der sozialen Komponente und Gefahr von Instabilität",
+            "Er ist zu bürokratisch",
+            "Er fördert Monopole"
+        ],
+        "correct": 1
     },
     {
         "type": "mc",
@@ -6856,6 +7496,565 @@
             );
         }
 
+        // --- Lernspiele Logic ---
+        function startGame(gameId) {
+            document.getElementById('games-menu').style.display = 'none';
+            document.getElementById('game-wirtschaft').style.display = 'none';
+            document.getElementById('game-sortierer').style.display = 'none';
+            document.getElementById('game-detektiv').style.display = 'none';
+            document.getElementById('game-kanzler').style.display = 'none';
+            
+            document.getElementById('game-' + gameId).style.display = 'block';
+            
+            if (gameId === 'wirtschaft') initGameWirtschaft();
+            if (gameId === 'sortierer') initGameSortierer();
+            if (gameId === 'detektiv') initGameDetektiv();
+            if (gameId === 'kanzler') initKanzlerSimulator();
+        }
+
+        function exitGame() {
+            document.getElementById('games-menu').style.display = 'grid';
+            document.getElementById('game-wirtschaft').style.display = 'none';
+            document.getElementById('game-sortierer').style.display = 'none';
+            document.getElementById('game-detektiv').style.display = 'none';
+            document.getElementById('game-kanzler').style.display = 'none';
+        }
+
+        // Game 1: Wirtschaft
+        const gwDataPool = [
+            // Q2.1 Keynesianismus & Fiskalpolitik
+            { s: "Die Wirtschaft steckt in einer tiefen Rezession. Die Regierung plant ein massives Konjunkturpaket für den Straßenbau. Welcher theoretische Effekt soll hier laut Keynesianismus eintreten?", opts: ["Der Crowding-Out-Effekt", "Der Multiplikatoreffekt", "Der Trickle-Down-Effekt", "Der Schweinezyklus"], c: 1, exp: "Der Multiplikatoreffekt besagt, dass staatliche Investitionen zu Einkommen bei Bauarbeitern führen, die dieses wieder konsumieren, was weitere Einkommen schafft. Ein investierter Euro erhöht das BIP um ein Vielfaches." },
+            { s: "Um die effektive Gesamtnachfrage in der Krise zu stärken, nimmt der Staat hohe Schulden auf (Deficit Spending). Welches langfristige Problem der nachfrageorientierten Fiskalpolitik droht hierdurch am ehesten?", opts: ["Sinkende Löhne", "Deflation", "Strukturelle Staatsverschuldung und Inflation", "Ein zu starker Export"], c: 2, exp: "Wenn der Staat in guten Zeiten (Boom) die Schulden nicht wie vorgesehen tilgt (Surplus Saving), führt dies zu struktureller Staatsverschuldung. Zudem kann eine zu hohe künstliche Nachfrage die Inflation anheizen." },
+            { s: "Die EZB senkt den Leitzins auf 0%, um die Wirtschaft anzukurbeln (Geldpolitik). Die Unternehmen investieren trotzdem nicht, weil sie pessimistisch in die Zukunft blicken. Wie nennt man diese Situation?", opts: ["Investitionsfalle", "Liquiditätsfalle", "Lohn-Preis-Spirale", "Angebotsüberhang"], c: 0, exp: "In der Investitionsfalle (ein keynesianisches Konzept) sind die Zinsen zwar extrem niedrig, aber die fehlende Gewinnerwartung der Unternehmen verhindert trotzdem neue Investitionen. Hier muss laut Keynes der Staat als Nachfrager einspringen." },
+            
+            // Q2.2 Neoklassik & Angebotspolitik
+            { s: "Wirtschaftsverbände klagen, dass die 'Lohnstückkosten' in Deutschland im internationalen Vergleich zu hoch seien. Was fordern sie im Sinne der angebotsorientierten Wirtschaftspolitik?", opts: ["Erhöhung des Mindestlohns", "Moderate Lohnabschlüsse (Lohnzurückhaltung) und Flexibilisierung des Arbeitsmarktes", "Höhere Staatsausgaben für Infrastruktur", "Einführung von Importzöllen"], c: 1, exp: "Hohe Lohnstückkosten (Lohnkosten pro produzierter Einheit) verschlechtern die internationale Wettbewerbsfähigkeit. Angebotspolitiker fordern daher Lohnzurückhaltung, um die Produktionskosten der Unternehmen zu senken." },
+            { s: "Die Regierung möchte die Rahmenbedingungen für Unternehmen verbessern (Ordnungspolitik). Welche Maßnahme passt zur neoklassischen Konzeption?", opts: ["Erhöhung der Unternehmenssteuern zur Finanzierung von Sozialleistungen", "Staatliche Subventionen für strauchelnde Großkonzerne", "Deregulierung (Abbau von Bürokratie) und Senkung von Unternehmenssteuern", "Verstaatlichung von Schlüsselindustrien"], c: 2, exp: "Die Angebotspolitik zielt auf die Verbesserung der Produktionsbedingungen ab. Weniger Bürokratie und niedrigere Steuern sollen Anreize für private Investitionen und Innovationen schaffen." },
+            { s: "Ein Kritikpunkt an der reinen Angebotspolitik ist, dass Steuersenkungen für Unternehmen nicht zwingend zu neuen Arbeitsplätzen führen. Warum?", opts: ["Weil Unternehmen das gesparte Geld oft zur Rationalisierung (Maschinen statt Menschen) oder für Gewinnausschüttungen nutzen", "Weil die Gewerkschaften das verbieten", "Weil Steuersenkungen illegal sind", "Weil dadurch die Lohnstückkosten steigen"], c: 0, exp: "Dies ist ein zentrales Problem der Angebotspolitik: Verbesserte Angebotsbedingungen garantieren nicht, dass Unternehmen das Kapital beschäftigungswirksam investieren (Rationalisierungsinvestitionen statt Erweiterungsinvestitionen)." },
+
+            // Q2.4 Arbeitsmarkt & Tarifpolitik
+            { s: "Die Gewerkschaft IG Metall und der Arbeitgeberverband Gesamtmetall verhandeln über höhere Löhne. Die Bundesregierung mischt sich ein und fordert einen Kompromiss von 3%. Ist das rechtlich zulässig?", opts: ["Ja, die Regierung muss die Wirtschaft lenken", "Nein, das verstößt gegen die grundgesetzlich garantierte Tarifautonomie (Art. 9 GG)", "Ja, aber nur bei drohenden Streiks", "Nein, das ist Aufgabe der EZB"], c: 1, exp: "Die Tarifautonomie (Art. 9 GG) garantiert den Koalitionen (Gewerkschaften und Arbeitgeberverbänden), Arbeits- und Wirtschaftsbedingungen (wie Löhne) frei von staatlichen Eingriffen auszuhandeln." },
+            { s: "Deutschland leidet unter einem massiven Fachkräftemangel. Welche arbeitsmarktpolitische Maßnahme ist am besten geeignet, dieses strukturelle Problem langfristig zu lösen?", opts: ["Erhöhung des Kurzarbeitergeldes", "Senkung des Leitzinses", "Gezielte Zuwanderungspolitik und massive Investitionen in das Bildungssystem/Umschulungen", "Einführung einer Reichensteuer"], c: 2, exp: "Fachkräftemangel ist ein strukturelles Problem (Mismatch auf dem Arbeitsmarkt). Es kann nur durch Qualifizierung (Bildung) oder den Zuzug von Fachkräften gelöst werden, nicht durch kurzfristige Konjunkturprogramme." },
+            { s: "Ein Politiker fordert: 'Jeder soll genau das verdienen, was er durch seine Arbeit an Wert für die Gesellschaft erwirtschaftet.' Welcher Gerechtigkeitsbegriff wird hier angewendet?", opts: ["Bedarfsgerechtigkeit", "Chancengerechtigkeit", "Leistungsgerechtigkeit", "Egalitäre Gerechtigkeit"], c: 2, exp: "Die Leistungsgerechtigkeit belohnt den individuellen Beitrag (Output). Im Gegensatz dazu steht z.B. die Bedarfsgerechtigkeit, die sich an den existenziellen Bedürfnissen eines Menschen orientiert (z.B. Kindergeld, Bürgergeld)." },
+
+            // Q3.2 Weltwirtschaft & Globalisierung
+            { s: "Ein Entwicklungsland möchte eine eigene Solarindustrie aufbauen, kann aber preislich nicht mit China konkurrieren. Es verhängt vorübergehend Zölle auf chinesische Solarpanels. Welches Argument wird hier genutzt?", opts: ["Freihandels-Argument", "Infant-Industry-Argument (Erziehungszoll)", "Trickle-Down-Argument", "Komparativer Kostenvorteil"], c: 1, exp: "Das Infant-Industry-Argument besagt, dass junge, im Aufbau befindliche Industrien vorübergehend durch Protektionismus (Zölle) geschützt werden müssen, bis sie international wettbewerbsfähig sind." },
+            { s: "Durch die Globalisierung stehen Staaten im ständigen Standortwettbewerb. Ein Land senkt massiv die Unternehmenssteuern und Umweltstandards, um Konzerne anzulocken. Wie nennt man diesen Prozess kritisch?", opts: ["Race to the bottom (Wettlauf nach unten)", "Wohlfahrtsstaatliche Expansion", "Protektionismus", "Nachhaltiges Wachstum"], c: 0, exp: "Der 'Race to the bottom' beschreibt die Gefahr, dass Staaten im Wettbewerb um Investoren ihre Sozial-, Steuer- und Umweltstandards immer weiter absenken (Wettbewerbsstaat vs. Wohlfahrtsstaat)." }
+        ];
+        let currentGwData = [];
+        let gwIndex = 0;
+        let gwScore = 0;
+
+        function initGameWirtschaft() {
+            // Pick 8 random questions for a round
+            currentGwData = [...gwDataPool].sort(() => Math.random() - 0.5).slice(0, 8);
+            gwIndex = 0; gwScore = 0;
+            updateGwScore();
+            loadGwScenario();
+        }
+        function updateGwScore() { document.getElementById('gw-score').innerText = `Punkte: ${gwScore} / ${currentGwData.length}`; }
+        function loadGwScenario() {
+            if (gwIndex >= currentGwData.length) {
+                document.getElementById('gw-scenario').innerHTML = `<b>Spiel beendet!</b> Du hast ${gwScore} von ${currentGwData.length} Punkten erreicht.`;
+                document.getElementById('gw-options').innerHTML = '<button class="btn btn-primary" style="justify-content:center;" onclick="initGameWirtschaft()">Neue Runde spielen</button>';
+                if(gwScore === currentGwData.length) fireConfetti();
+                return;
+            }
+            const data = currentGwData[gwIndex];
+            document.getElementById('gw-scenario').innerText = "Szenario: " + data.s;
+            const optsContainer = document.getElementById('gw-options');
+            optsContainer.innerHTML = '';
+            data.opts.forEach((opt, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'quiz-option';
+                btn.innerText = opt;
+                btn.onclick = () => checkGwAnswer(i, btn);
+                optsContainer.appendChild(btn);
+            });
+        }
+        function checkGwAnswer(i, btn) {
+            const data = currentGwData[gwIndex];
+            const opts = document.getElementById('gw-options').children;
+            for(let o of opts) o.disabled = true;
+            
+            if (i === data.c) {
+                btn.classList.add('correct');
+                gwScore++;
+                showToast('Richtig! ' + data.exp, 'success');
+            } else {
+                btn.classList.add('wrong');
+                opts[data.c].classList.add('correct');
+                showToast('Falsch. ' + data.exp, 'error');
+            }
+            updateGwScore();
+            setTimeout(() => { gwIndex++; loadGwScenario(); }, 4500);
+        }
+
+        // Game 2: Sortierer
+        const gsDataPool = [
+            // Q2.4 Gerechtigkeitsbegriffe
+            { item: "Kindergeld und Wohngeld für einkommensschwache Familien", buckets: ["Bedarfsgerechtigkeit", "Leistungsgerechtigkeit"], c: 0 },
+            { item: "Akkordlohn (Bezahlung nach produzierter Stückzahl)", buckets: ["Bedarfsgerechtigkeit", "Leistungsgerechtigkeit"], c: 1 },
+            { item: "Bürgergeld zur Sicherung des Existenzminimums", buckets: ["Bedarfsgerechtigkeit", "Leistungsgerechtigkeit"], c: 0 },
+            { item: "Boni für Manager bei Erreichen der Unternehmensziele", buckets: ["Bedarfsgerechtigkeit", "Leistungsgerechtigkeit"], c: 1 },
+
+            // Q3.2 Wohlfahrtsstaat vs. Wettbewerbsstaat
+            { item: "Umfassender Kündigungsschutz und hohe Sozialstandards", buckets: ["Wohlfahrtsstaat", "Wettbewerbsstaat"], c: 0 },
+            { item: "Senkung von Unternehmenssteuern zur Anlockung von Investoren", buckets: ["Wohlfahrtsstaat", "Wettbewerbsstaat"], c: 1 },
+            { item: "Deregulierung des Arbeitsmarktes (z.B. mehr Leiharbeit)", buckets: ["Wohlfahrtsstaat", "Wettbewerbsstaat"], c: 1 },
+            { item: "Starke Umverteilung durch progressive Einkommenssteuer", buckets: ["Wohlfahrtsstaat", "Wettbewerbsstaat"], c: 0 },
+
+            // Q1.2 Partizipation & Demokratie
+            { item: "Entscheidungsfindung durch gewählte Abgeordnete im Parlament", buckets: ["Repräsentative Demokratie", "Direkte Demokratie"], c: 0 },
+            { item: "Volksentscheid über ein neues Schulgesetz auf Landesebene", buckets: ["Repräsentative Demokratie", "Direkte Demokratie"], c: 1 },
+            { item: "Gefahr von Populismus und emotionalisierten Kampagnen ist besonders hoch", buckets: ["Repräsentative Demokratie", "Direkte Demokratie"], c: 1 },
+            { item: "Schutz von Minderheiten durch komplexe Gesetzgebungsverfahren", buckets: ["Repräsentative Demokratie", "Direkte Demokratie"], c: 0 },
+
+            // Q1.4 Öffentlichkeit & Medien
+            { item: "Gatekeeper-Funktion (Journalisten filtern relevante Nachrichten)", buckets: ["Klassische Massenmedien", "Neue Medien (Social Media)"], c: 0 },
+            { item: "Gefahr von Filterblasen und Echokammern durch Algorithmen", buckets: ["Klassische Massenmedien", "Neue Medien (Social Media)"], c: 1 },
+            { item: "Hohe Reichweite für Fake News durch unkontrolliertes Teilen", buckets: ["Klassische Massenmedien", "Neue Medien (Social Media)"], c: 1 },
+            { item: "Pressekodex und institutionelle Medienethik als Standard", buckets: ["Klassische Massenmedien", "Neue Medien (Social Media)"], c: 0 },
+
+            // Q3.1 Internationale Konfliktbearbeitung (UN)
+            { item: "Kann völkerrechtlich bindende Resolutionen erlassen (z.B. Sanktionen)", buckets: ["UN-Sicherheitsrat", "UN-Generalversammlung"], c: 0 },
+            { item: "Jeder Mitgliedsstaat hat genau eine Stimme (Souveräne Gleichheit)", buckets: ["UN-Sicherheitsrat", "UN-Generalversammlung"], c: 1 },
+            { item: "Fünf ständige Mitglieder besitzen ein Vetorecht", buckets: ["UN-Sicherheitsrat", "UN-Generalversammlung"], c: 0 },
+            { item: "Verabschiedet den Haushalt der Vereinten Nationen", buckets: ["UN-Sicherheitsrat", "UN-Generalversammlung"], c: 1 },
+
+            // Q2.1 Fiskal- vs. Geldpolitik
+            { item: "Erhöhung der Staatsausgaben für Infrastruktur", buckets: ["Fiskalpolitik (Staat)", "Geldpolitik (EZB)"], c: 0 },
+            { item: "Senkung des Leitzinses zur Ankurbelung der Kreditvergabe", buckets: ["Fiskalpolitik (Staat)", "Geldpolitik (EZB)"], c: 1 },
+            { item: "Ankauf von Staatsanleihen auf dem Sekundärmarkt", buckets: ["Fiskalpolitik (Staat)", "Geldpolitik (EZB)"], c: 1 },
+            { item: "Senkung der Einkommenssteuer zur Stärkung der Kaufkraft", buckets: ["Fiskalpolitik (Staat)", "Geldpolitik (EZB)"], c: 0 }
+        ];
+        let gsIndex = 0;
+        let gsScore = 0;
+        let currentGsData = [];
+
+        function initGameSortierer() {
+            // Pick 10 random items for a round
+            currentGsData = [...gsDataPool].sort(() => Math.random() - 0.5).slice(0, 10);
+            gsIndex = 0; gsScore = 0;
+            updateGsScore();
+            loadGsItem();
+        }
+        function updateGsScore() { document.getElementById('gs-score').innerText = `Punkte: ${gsScore} / ${currentGsData.length}`; }
+        function loadGsItem() {
+            if (gsIndex >= currentGsData.length) {
+                document.getElementById('gs-item').innerHTML = `<b>Spiel beendet!</b> Du hast ${gsScore} von ${currentGsData.length} Punkten erreicht.`;
+                document.getElementById('gs-buckets').innerHTML = '<button class="btn btn-primary" style="margin: 0 auto;" onclick="initGameSortierer()">Neue Runde spielen</button>';
+                if(gsScore === currentGsData.length) fireConfetti();
+                return;
+            }
+            const data = currentGsData[gsIndex];
+            document.getElementById('gs-item').innerText = data.item;
+            const bucketsContainer = document.getElementById('gs-buckets');
+            bucketsContainer.innerHTML = '';
+            data.buckets.forEach((b, i) => {
+                const div = document.createElement('div');
+                div.className = 'sort-bucket';
+                div.innerText = b;
+                div.onclick = () => checkGsAnswer(i, div);
+                bucketsContainer.appendChild(div);
+            });
+        }
+        function checkGsAnswer(i, div) {
+            const data = currentGsData[gsIndex];
+            const buckets = document.getElementById('gs-buckets').children;
+            for(let b of buckets) b.style.pointerEvents = 'none';
+
+            if (i === data.c) {
+                div.style.backgroundColor = 'rgba(74, 222, 128, 0.2)';
+                div.style.borderColor = 'var(--success)';
+                gsScore++;
+                showToast('Richtig zugeordnet!', 'success');
+            } else {
+                div.style.backgroundColor = 'rgba(248, 113, 113, 0.2)';
+                div.style.borderColor = 'var(--error)';
+                buckets[data.c].style.backgroundColor = 'rgba(74, 222, 128, 0.2)';
+                buckets[data.c].style.borderColor = 'var(--success)';
+                showToast('Leider falsch.', 'error');
+            }
+            updateGsScore();
+            setTimeout(() => { gsIndex++; loadGsItem(); }, 2000);
+        }
+
+        // Game 3: Detektiv
+        const gdDataPool = [
+            // Q1.1 Verfassung & Rechtsstaatlichkeit
+            { s: "Der Bundestag beschließt mit 2/3-Mehrheit, das Demokratieprinzip abzuschaffen und einen auf Lebenszeit gewählten Monarchen einzusetzen.", opts: ["Art. 1 GG (Menschenwürde)", "Art. 20 GG i.V.m. Art. 79 Abs. 3 GG (Ewigkeitsklausel)", "Art. 5 GG (Meinungsfreiheit)", "Art. 3 GG (Gleichheit)"], c: 1, exp: "Die Ewigkeitsklausel (Art. 79 Abs. 3 GG) schützt die in Art. 1 und Art. 20 festgelegten Prinzipien (Demokratie, Rechtsstaat, Sozialstaat, Bundesstaat) vor jeglicher Änderung, selbst mit 100% Mehrheit." },
+            { s: "Die Bundesregierung (Exekutive) ist unzufrieden mit einem vom Bundestag (Legislative) beschlossenen Gesetz. Sie weigert sich schlichtweg, das Gesetz auszuführen.", opts: ["Verstoß gegen das Sozialstaatsprinzip", "Verstoß gegen die Gewaltenteilung und das Rechtsstaatsprinzip (Art. 20 GG)", "Verstoß gegen die Meinungsfreiheit", "Das ist völlig legal (Richtlinienkompetenz)"], c: 1, exp: "Die Exekutive ist an Gesetz und Recht gebunden (Rechtsstaatsprinzip). Sie darf Gesetze der Legislative nicht ignorieren. Dies ist ein massiver Verstoß gegen die Gewaltenteilung." },
+            { s: "Das Bundesverfassungsgericht (Judikative) erklärt ein neues Überwachungsgesetz des Bundestages für verfassungswidrig. Der Innenminister wendet das Gesetz trotzdem weiter an.", opts: ["Verstoß gegen die Bindungswirkung des BVerfG (Gewaltenteilung)", "Verstoß gegen das Föderalismusprinzip", "Verstoß gegen das Subsidiaritätsprinzip", "Verstoß gegen das Demokratieprinzip"], c: 0, exp: "Entscheidungen des Bundesverfassungsgerichts binden alle übrigen Verfassungsorgane (Legislative und Exekutive). Die Missachtung bricht die verfassungsmäßige Ordnung." },
+            { s: "Ein Bundesland beschließt, dass Frauen bei Landtagswahlen zwei Stimmen haben, Männer nur eine, um historische Nachteile auszugleichen.", opts: ["Art. 3 GG (Gleichheitsgrundsatz) & Art. 38 GG (Gleiche Wahl)", "Art. 1 GG (Menschenwürde)", "Art. 9 GG (Vereinigungsfreiheit)", "Art. 14 GG (Eigentum)"], c: 0, exp: "Dies verstößt gegen den Gleichheitsgrundsatz und den Grundsatz der gleichen Wahl (jede Stimme muss den gleichen Zählwert haben)." },
+            
+            // Q1.2 Parteiendemokratie
+            { s: "Die Bundesregierung verbietet eine kleine oppositionelle Partei per einfachem Regierungsdekret, weil sie ihr zu kritisch ist.", opts: ["Art. 5 GG (Pressefreiheit)", "Art. 21 GG (Parteienprivileg)", "Art. 8 GG (Versammlungsfreiheit)", "Art. 20 GG (Sozialstaat)"], c: 1, exp: "Das Parteienprivileg (Art. 21 GG) besagt, dass NUR das Bundesverfassungsgericht eine Partei verbieten darf, nicht die Regierung. Dies schützt die Opposition." },
+            { s: "Eine Partei beschließt, ihren Vorsitzenden nicht mehr durch die Mitglieder oder Delegierten wählen zu lassen, sondern der alte Vorsitzende bestimmt seinen Nachfolger selbst.", opts: ["Verstoß gegen die Meinungsfreiheit", "Verstoß gegen den Grundsatz der innerparteilichen Demokratie (Art. 21 GG)", "Verstoß gegen das Sozialstaatsprinzip", "Das ist legal (Vereinsfreiheit)"], c: 1, exp: "Art. 21 GG schreibt vor, dass die innere Ordnung von Parteien demokratischen Grundsätzen entsprechen muss. Eine 'Erbfolge' ist verfassungswidrig." },
+            
+            // Gesetzgebung & Verfassungsorgane
+            { s: "Der Bundeskanzler verliert eine Abstimmung im Bundestag. Der Bundestag wählt sofort einen neuen Kanzler, ohne dass der alte Kanzler die Vertrauensfrage gestellt hat.", opts: ["Art. 65 GG (Richtlinienkompetenz)", "Art. 67 GG (Konstruktives Misstrauensvotum)", "Art. 68 GG (Vertrauensfrage)", "Art. 81 GG (Gesetzgebungsnotstand)"], c: 1, exp: "Der Bundestag kann dem Kanzler nur das Misstrauen aussprechen, indem er mit der Mehrheit seiner Mitglieder einen Nachfolger wählt (Konstruktives Misstrauensvotum). Das sorgt für Stabilität." },
+            { s: "Ein Bundesland erlässt ein Gesetz zur Verteidigungspolitik (z.B. Beschaffung von Panzern für eine eigene Landes-Armee).", opts: ["Art. 30 GG (Kompetenzverteilung)", "Art. 73 GG (Ausschließliche Gesetzgebung des Bundes)", "Art. 72 GG (Konkurrierende Gesetzgebung)", "Art. 28 GG (Homogenitätsgebot)"], c: 1, exp: "Die Verteidigung fällt nach Art. 73 GG in die ausschließliche Gesetzgebungskompetenz des Bundes. Länder dürfen hier keine Gesetze erlassen." },
+            
+            // Wehrhafte Demokratie & Grundrechte
+            { s: "Ein radikaler Politiker ruft öffentlich zur Abschaffung der Demokratie auf und nutzt seine Meinungsfreiheit systematisch zum Kampf gegen die freiheitliche demokratische Grundordnung.", opts: ["Art. 5 GG (Meinungsfreiheit)", "Art. 18 GG (Verwirkung von Grundrechten)", "Art. 21 GG (Parteienverbot)", "Art. 20 Abs. 4 GG (Widerstandsrecht)"], c: 1, exp: "Wer Grundrechte (wie die Meinungsfreiheit) zum Kampf gegen die Verfassung missbraucht, kann diese nach Art. 18 GG verwirken (Entscheidung liegt beim BVerfG). Dies ist Ausdruck der 'wehrhaften Demokratie'." },
+            { s: "Die Polizei durchsucht ohne richterlichen Beschluss und ohne Gefahr im Verzug die Wohnung eines Journalisten, um seine Quellen herauszufinden.", opts: ["Art. 13 GG (Unverletzlichkeit der Wohnung) & Art. 5 GG (Pressefreiheit)", "Art. 2 GG (Handlungsfreiheit)", "Art. 12 GG (Berufsfreiheit)", "Art. 16a GG (Asylrecht)"], c: 0, exp: "Die Wohnung ist unverletzlich (Art. 13) und Journalisten haben ein Zeugnisverweigerungsrecht zum Quellenschutz (Art. 5)." }
+        ];
+        let currentGdData = [];
+        let gdIndex = 0;
+        let gdScore = 0;
+
+        function initGameDetektiv() {
+            // Pick 6 random cases for a round
+            currentGdData = [...gdDataPool].sort(() => Math.random() - 0.5).slice(0, 6);
+            gdIndex = 0; gdScore = 0;
+            updateGdScore();
+            loadGdScenario();
+        }
+        function updateGdScore() { document.getElementById('gd-score').innerText = `Punkte: ${gdScore} / ${currentGdData.length}`; }
+        function loadGdScenario() {
+            if (gdIndex >= currentGdData.length) {
+                document.getElementById('gd-scenario').innerHTML = `<b>Ermittlungen abgeschlossen!</b> Du hast ${gdScore} von ${currentGdData.length} Fällen korrekt gelöst.`;
+                document.getElementById('gd-options').innerHTML = '<button class="btn btn-primary" style="justify-content:center;" onclick="initGameDetektiv()">Neue Fälle bearbeiten</button>';
+                if(gdScore === currentGdData.length) fireConfetti();
+                return;
+            }
+            const data = currentGdData[gdIndex];
+            document.getElementById('gd-scenario').innerText = "Fallakte: " + data.s;
+            const optsContainer = document.getElementById('gd-options');
+            optsContainer.innerHTML = '';
+            data.opts.forEach((opt, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'quiz-option';
+                btn.innerText = opt;
+                btn.onclick = () => checkGdAnswer(i, btn);
+                optsContainer.appendChild(btn);
+            });
+        }
+        function checkGdAnswer(i, btn) {
+            const data = currentGdData[gdIndex];
+            const opts = document.getElementById('gd-options').children;
+            for(let o of opts) o.disabled = true;
+            
+            if (i === data.c) {
+                btn.classList.add('correct');
+                gdScore++;
+                showToast('Korrekt ermittelt! ' + data.exp, 'success');
+            } else {
+                btn.classList.add('wrong');
+                opts[data.c].classList.add('correct');
+                showToast('Falsche Fährte. ' + data.exp, 'error');
+            }
+            updateGdScore();
+            setTimeout(() => { gdIndex++; loadGdScenario(); }, 5000);
+        }
+
+        // ==========================================
+        // Game 4: Kanzler-Simulator (The Ultimate Game)
+        // ==========================================
+        const ksDataPool = [
+            {
+                title: "Die globale Lieferkettenkrise",
+                desc: "Ein internationaler Handelskonflikt (Q3.2) führt zu massiven Lieferengpässen. Die Inflation steigt auf 8%, gleichzeitig stagniert die Wirtschaft (Stagflation, Q2.1). Die Medien (Q1.4) werfen dir Untätigkeit vor.",
+                opts: [
+                    {
+                        text: "Keynesianisches Konjunkturpaket auf Pump schnüren",
+                        eff: { w: 15, v: -20, i: 0, g: 10 },
+                        exp: "Du nutzt Deficit Spending (Q2.1). Das kurbelt die Nachfrage an, aber bei Stagflation heizt das die Inflation weiter an! Zudem strapazierst du die Schuldenbremse (Art. 109 GG, Q1.1) massiv, was verfassungsrechtlich hochproblematisch ist."
+                    },
+                    {
+                        text: "Lohnzurückhaltung fordern & Leitzins-Appell an EZB",
+                        eff: { w: 0, v: -15, i: -5, g: -10 },
+                        exp: "Du versuchst angebotsorientierte Politik (Q2.2). ABER: Die Einmischung in Löhne verletzt die Tarifautonomie (Art. 9 GG, Q2.4) und der Appell an die EZB verletzt deren politische Unabhängigkeit (Q2.1)!"
+                    },
+                    {
+                        text: "Strukturelle Reformen & Umschulungen fördern",
+                        eff: { w: 10, v: 5, i: 0, g: 5 },
+                        exp: "Ein langfristiger, angebotsorientierter Ansatz (Q2.2). Du verbesserst die Standortfaktoren, ohne die Verfassung zu brechen oder die Inflation durch künstliche Nachfrage weiter anzuheizen."
+                    }
+                ]
+            },
+            {
+                title: "Extremismus im Netz",
+                desc: "Eine populistische Partei nutzt Social-Media-Algorithmen (Filterblasen, Q1.4), um gezielt Fake News zu verbreiten. Sie ruft offen zur Abschaffung der Pressefreiheit auf. Die Gesellschaft spaltet sich.",
+                opts: [
+                    {
+                        text: "Partei per Regierungsdekret sofort verbieten",
+                        eff: { w: 0, v: -30, i: -10, g: 10 },
+                        exp: "KRITISCHER VERFASSUNGSBRUCH! Das Parteienprivileg (Art. 21 GG, Q1.2) besagt eindeutig: Nur das Bundesverfassungsgericht darf eine Partei verbieten. Die Exekutive darf das niemals selbst tun (Gewaltenteilung, Q1.1)."
+                    },
+                    {
+                        text: "Antrag auf Parteienverbot beim BVerfG stellen",
+                        eff: { w: 0, v: 15, i: 5, g: 10 },
+                        exp: "Der korrekte Weg der 'Wehrhaften Demokratie' (Q1.1). Du nutzt die rechtsstaatlichen Mittel (Art. 21 GG), um Verfassungsfeinde zu bekämpfen, wahrst aber die Gewaltenteilung."
+                    },
+                    {
+                        text: "Zensurgesetz für Social Media erlassen",
+                        eff: { w: -5, v: -25, i: -10, g: -15 },
+                        exp: "Verstoß gegen Art. 5 GG (Meinungs- und Pressefreiheit). 'Eine Zensur findet nicht statt.' Der Kampf gegen Fake News (Q1.4) darf nicht die Grundrechte aushebeln."
+                    }
+                ]
+            },
+            {
+                title: "Klimaschutz vs. Wettbewerbsfähigkeit",
+                desc: "Die UN fordert drastischere CO2-Ziele (Q3.5). Die deutsche Industrie warnt vor einem 'Race to the bottom' (Q3.2) und droht mit Abwanderung ins Ausland, wenn die Produktionskosten (Angebotspolitik, Q2.2) weiter steigen.",
+                opts: [
+                    {
+                        text: "Nationale CO2-Steuer massiv erhöhen",
+                        eff: { w: -20, v: 0, i: 15, g: 5 },
+                        exp: "Gut für die internationale Umweltpolitik (Q3.5), aber ein harter Schlag für die nationale Angebotspolitik (Q2.2). Die Lohnstückkosten und Produktionskosten steigen, Unternehmen wandern ab (Standortwettbewerb)."
+                    },
+                    {
+                        text: "EU-weiten Emissionshandel (Zertifikate) vorantreiben",
+                        eff: { w: 10, v: 5, i: 15, g: 10 },
+                        exp: "Ein marktwirtschaftliches, ordnungspolitisches Instrument (Q2.2). Durch die EU-weite Lösung verhinderst du Wettbewerbsnachteile im Binnenmarkt und erfüllst internationale Pflichten (Q3.5)."
+                    },
+                    {
+                        text: "UN-Ziele ignorieren, Kohlesubventionen erhöhen",
+                        eff: { w: 15, v: -5, i: -25, g: -15 },
+                        exp: "Kurzfristig gut für die heimische Industrie (Protektionismus), aber du brichst völkerrechtliche Verträge (Q3.1) und ignorierst die globalen ökologischen Herausforderungen (Q3.5)."
+                    }
+                ]
+            },
+            {
+                title: "Der Mega-Streik",
+                desc: "Die Gewerkschaften fordern 12% mehr Lohn (Inflationsausgleich). Die Arbeitgeber bieten 2%. Ein unbefristeter Streik im Transportsektor droht die gesamte Wirtschaft lahmzulegen (Q2.4).",
+                opts: [
+                    {
+                        text: "Per Notstandsgesetz einen Kompromiss von 7% diktieren",
+                        eff: { w: 10, v: -30, i: 0, g: -20 },
+                        exp: "MASSIVER VERFASSUNGSBRUCH! Du verletzt die Tarifautonomie (Art. 9 GG, Q2.4) und die Koalitionsfreiheit. Der Staat darf keine Löhne diktieren."
+                    },
+                    {
+                        text: "Staatliche Schlichter anbieten, aber Autonomie wahren",
+                        eff: { w: 5, v: 10, i: 0, g: 15 },
+                        exp: "Der rechtsstaatlich korrekte Weg. Du respektierst die Tarifautonomie (Q2.4) der Sozialpartner, hilfst aber moderierend bei der Konfliktlösung."
+                    },
+                    {
+                        text: "Streikrecht für systemrelevante Berufe abschaffen",
+                        eff: { w: 15, v: -35, i: -10, g: -25 },
+                        exp: "Ein direkter Angriff auf die Grundrechte (Art. 9 Abs. 3 GG). Das Streikrecht ist ein elementarer Bestandteil der Tarifautonomie und der Demokratie (Q1.1)."
+                    }
+                ]
+            },
+            {
+                title: "Das Misstrauensvotum",
+                desc: "Deine Koalition zerbricht an einem Streit über Sozialpolitik (Bedarfs- vs. Leistungsgerechtigkeit, Q2.4). Die Opposition bringt ein Konstruktives Misstrauensvotum (Art. 67 GG) ein.",
+                opts: [
+                    {
+                        text: "Den Bundestag sofort per Dekret auflösen",
+                        eff: { w: -10, v: -40, i: -15, g: -20 },
+                        exp: "Diktatorisches Handeln! Der Kanzler kann den Bundestag nicht auflösen. Das geht nur über die Vertrauensfrage (Art. 68 GG) und den Bundespräsidenten (Q1.1)."
+                    },
+                    {
+                        text: "Die Vertrauensfrage (Art. 68 GG) stellen",
+                        eff: { w: 0, v: 15, i: 5, g: 10 },
+                        exp: "Der verfassungskonforme Weg (Q1.1). Du testest, ob du noch eine Mehrheit hast. Verlierst du sie, kann der Bundespräsident den Bundestag auflösen und es gibt Neuwahlen."
+                    },
+                    {
+                        text: "Dem Oppositionsführer das Rederecht entziehen",
+                        eff: { w: 0, v: -35, i: -10, g: -25 },
+                        exp: "Ein eklatanter Verstoß gegen das freie Mandat (Art. 38 GG) und die parlamentarische Demokratie (Q1.1)."
+                    }
+                ]
+            },
+            {
+                title: "UN-Blauhelm-Mission",
+                desc: "Der UN-Sicherheitsrat (Q3.1) verabschiedet eine bindende Resolution zur Friedenssicherung in einem Bürgerkriegsland. Die UN bittet Deutschland dringend um Truppen.",
+                opts: [
+                    {
+                        text: "Bundeswehr sofort per Regierungsbeschluss entsenden",
+                        eff: { w: -5, v: -25, i: 15, g: -10 },
+                        exp: "Verstoß gegen den Parlamentsvorbehalt! Die Bundeswehr ist eine Parlamentsarmee (Q1.1). Auslandseinsätze müssen zwingend vorher vom Bundestag gebilligt werden."
+                    },
+                    {
+                        text: "Mandat im Bundestag zur Abstimmung einbringen",
+                        eff: { w: -5, v: 15, i: 15, g: 5 },
+                        exp: "Korrekt! Du wahrst die Rechte der Legislative (Q1.1) und erfüllst gleichzeitig Deutschlands Pflichten im System kollektiver Sicherheit (UN, Q3.1)."
+                    },
+                    {
+                        text: "Ablehnen: 'Deutschland mischt sich nicht ein'",
+                        eff: { w: 5, v: 0, i: -25, g: -5 },
+                        exp: "Das isoliert Deutschland außenpolitisch und schwächt die UN als Akteur der kollektiven Friedenssicherung (Q3.1)."
+                    }
+                ]
+            },
+            {
+                title: "Die Schuldenbremse wackelt",
+                desc: "Wirtschaftsforscher prognostizieren eine schwere Rezession (Q2.1). Du willst ein massives keynesianisches Konjunkturpaket schnüren, aber die im Grundgesetz verankerte Schuldenbremse (Art. 109 GG) ist erreicht.",
+                opts: [
+                    {
+                        text: "Schuldenbremse ignorieren, Wirtschaft hat Vorrang",
+                        eff: { w: 15, v: -25, i: 0, g: 5 },
+                        exp: "Verfassungsbruch! Die Schuldenbremse (Art. 109 GG, Q1.1) ist bindend. Ein einfaches Ignorieren durch die Exekutive zerstört das Rechtsstaatsprinzip."
+                    },
+                    {
+                        text: "Notlagenklausel im Bundestag beantragen",
+                        eff: { w: 10, v: 15, i: 0, g: 5 },
+                        exp: "Verfassungskonform (Q1.1). Bei außergewöhnlichen Notsituationen kann der Bundestag die Schuldenbremse aussetzen, muss aber einen Tilgungsplan beschließen."
+                    },
+                    {
+                        text: "Steuern in der Krise massiv erhöhen",
+                        eff: { w: -25, v: 5, i: 0, g: -20 },
+                        exp: "Ein fataler ökonomischer Fehler (Prozyklische Politik, Q2.1). Steuererhöhungen in der Rezession würgen die ohnehin schwache Nachfrage komplett ab."
+                    }
+                ]
+            },
+            {
+                title: "EZB-Konflikt",
+                desc: "Die Europäische Zentralbank (EZB) kauft massiv Staatsanleihen (Geldpolitik, Q2.1). Das Bundesverfassungsgericht rügt dies als Kompetenzüberschreitung. Die EU-Kommission droht Deutschland mit einem Vertragsverletzungsverfahren.",
+                opts: [
+                    {
+                        text: "Der EZB befehlen, die Käufe sofort zu stoppen",
+                        eff: { w: -10, v: -20, i: -15, g: -5 },
+                        exp: "Verstoß gegen EU-Recht! Die EZB ist politisch absolut unabhängig (Q2.1). Weder nationale Regierungen noch EU-Organe dürfen ihr Weisungen erteilen."
+                    },
+                    {
+                        text: "Urteil respektieren, auf EU-Ebene vermitteln",
+                        eff: { w: 0, v: 15, i: 10, g: 5 },
+                        exp: "Du respektierst die Unabhängigkeit der EZB und die Rolle des BVerfG (Gewaltenteilung, Q1.1) im Mehrebenensystem der EU."
+                    },
+                    {
+                        text: "Das Urteil des Bundesverfassungsgerichts ignorieren",
+                        eff: { w: 5, v: -35, i: 10, g: -15 },
+                        exp: "Schwerer Verfassungsbruch! Urteile des BVerfG binden alle Verfassungsorgane (Q1.1). Ignorierst du es, hebelst du den Rechtsstaat aus."
+                    }
+                ]
+            }
+        ];
+
+        let ksMetrics = { w: 50, v: 50, i: 50, g: 50 };
+        let ksMonth = 1;
+        let currentKsEvent = null;
+        let ksUsedEvents = [];
+
+        function initKanzlerSimulator() {
+            ksMetrics = { w: 50, v: 50, i: 50, g: 50 };
+            ksMonth = 1;
+            ksUsedEvents = [];
+            document.getElementById('ks-feedback').style.display = 'none';
+            document.getElementById('ks-main-card').style.display = 'block';
+            updateKsUI();
+            loadKsEvent();
+        }
+
+        function getMetricColor(val) {
+            if (val >= 70) return 'var(--success)';
+            if (val >= 30) return 'var(--warning)';
+            return 'var(--error)';
+        }
+
+        function updateKsUI() {
+            document.getElementById('ks-month').innerText = `Monat: ${ksMonth} im Amt`;
+            
+            ['w', 'v', 'i', 'g'].forEach(m => {
+                const val = Math.max(0, Math.min(100, ksMetrics[m]));
+                document.getElementById(`ks-val-${m}`).innerText = `${val}%`;
+                const bar = document.getElementById(`ks-bar-${m}`);
+                bar.style.width = `${val}%`;
+                bar.style.backgroundColor = getMetricColor(val);
+            });
+        }
+
+        function loadKsEvent() {
+            // Get available events
+            let available = ksDataPool.filter((_, idx) => !ksUsedEvents.includes(idx));
+            
+            // If all events played, reset pool (or win game)
+            if (available.length === 0) {
+                ksUsedEvents = [];
+                available = [...ksDataPool];
+            }
+
+            // Pick random event
+            const randIdx = Math.floor(Math.random() * available.length);
+            currentKsEvent = available[randIdx];
+            
+            // Find original index to mark as used
+            const origIdx = ksDataPool.indexOf(currentKsEvent);
+            ksUsedEvents.push(origIdx);
+
+            document.getElementById('ks-scenario').innerHTML = `<strong>AKTE: ${currentKsEvent.title}</strong><br><br>${currentKsEvent.desc}`;
+            
+            const optsContainer = document.getElementById('ks-options');
+            optsContainer.innerHTML = '';
+            
+            currentKsEvent.opts.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'quiz-option';
+                btn.innerText = opt.text;
+                btn.onclick = () => handleKsDecision(idx);
+                optsContainer.appendChild(btn);
+            });
+        }
+
+        function handleKsDecision(optIdx) {
+            const opt = currentKsEvent.opts[optIdx];
+            
+            // Apply effects
+            ksMetrics.w += opt.eff.w;
+            ksMetrics.v += opt.eff.v;
+            ksMetrics.i += opt.eff.i;
+            ksMetrics.g += opt.eff.g;
+            
+            updateKsUI();
+
+            // Hide main card, show feedback
+            document.getElementById('ks-main-card').style.display = 'none';
+            const feedback = document.getElementById('ks-feedback');
+            feedback.style.display = 'block';
+            
+            // Check for game over conditions
+            let isGameOver = false;
+            let gameOverReason = "";
+            
+            if (ksMetrics.w <= 0) { isGameOver = true; gameOverReason = "Staatsbankrott! Die Wirtschaft ist komplett zusammengebrochen."; }
+            else if (ksMetrics.v <= 0) { isGameOver = true; gameOverReason = "Verfassungskrise! Das Bundesverfassungsgericht hat dich wegen schwerer Verfassungsbrüche des Amtes enthoben."; }
+            else if (ksMetrics.i <= 0) { isGameOver = true; gameOverReason = "Internationale Isolation! Deutschland wurde mit massiven Sanktionen belegt und hat alle Bündnispartner verloren."; }
+            else if (ksMetrics.g <= 0) { isGameOver = true; gameOverReason = "Volksaufstand! Die Gesellschaft ist tief gespalten, Massenproteste zwingen dich zum Rücktritt."; }
+
+            const titleEl = document.getElementById('ks-feedback-title');
+            const textEl = document.getElementById('ks-feedback-text');
+            const impactsEl = document.getElementById('ks-feedback-impacts');
+            
+            impactsEl.innerHTML = '';
+
+            if (isGameOver) {
+                titleEl.innerHTML = '❌ REGIONALREGIERUNG GESTÜRZT (GAME OVER)';
+                titleEl.style.color = 'var(--error)';
+                textEl.innerHTML = `<strong>${gameOverReason}</strong><br><br>Letzte Aktion: ${opt.exp}<br><br>Du hast ${ksMonth} Monate im Amt überlebt.`;
+                document.querySelector('#ks-feedback button').innerText = 'Neues Spiel starten';
+                document.querySelector('#ks-feedback button').onclick = initKanzlerSimulator;
+            } else {
+                titleEl.innerHTML = '📋 Berater-Analyse (Abitur-Wissen)';
+                titleEl.style.color = 'var(--text-primary)';
+                textEl.innerHTML = opt.exp;
+                
+                // Show impact badges
+                const labels = { w: 'Wirtschaft', v: 'Verfassung', i: 'International', g: 'Gesellschaft' };
+                ['w', 'v', 'i', 'g'].forEach(m => {
+                    if (opt.eff[m] !== 0) {
+                        const badge = document.createElement('span');
+                        const isPos = opt.eff[m] > 0;
+                        badge.className = `impact-badge ${isPos ? 'impact-pos' : 'impact-neg'}`;
+                        badge.innerText = `${labels[m]} ${isPos ? '+' : ''}${opt.eff[m]}`;
+                        impactsEl.appendChild(badge);
+                    }
+                });
+
+                document.querySelector('#ks-feedback button').innerText = 'Nächster Monat ➔';
+                document.querySelector('#ks-feedback button').onclick = nextKsTurn;
+            }
+        }
+
+        function nextKsTurn() {
+            ksMonth++;
+            document.getElementById('ks-feedback').style.display = 'none';
+            document.getElementById('ks-main-card').style.display = 'block';
+            updateKsUI();
+            loadKsEvent();
+        }
+
         // --- Magic Lückentext Logic ---
         let ltAnswers = {};
 
@@ -6906,7 +8105,52 @@
             container.style.display = 'block';
             document.getElementById('lt-actions').style.display = 'flex';
             
+            // --- Word Bank Logic ---
+            const wordsArray = Object.values(ltAnswers);
+            // Shuffle array
+            for (let i = wordsArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [wordsArray[i], wordsArray[j]] = [wordsArray[j], wordsArray[i]];
+            }
+
+            const wordbankContainer = document.getElementById('lt-wordbank');
+            wordbankContainer.innerHTML = '';
+            wordsArray.forEach(word => {
+                const span = document.createElement('span');
+                span.className = 'word-chip';
+                span.innerText = word;
+                span.dataset.word = word.toLowerCase();
+                wordbankContainer.appendChild(span);
+            });
+            wordbankContainer.style.display = 'flex';
+
+            // Add event listeners to inputs
+            const inputs = container.querySelectorAll('.lt-input');
+            inputs.forEach(input => {
+                input.addEventListener('input', updateWordBank);
+            });
+            
             showToast('Lückentext generiert!', 'success');
+        }
+
+        function updateWordBank() {
+            const inputs = document.querySelectorAll('#lt-container .lt-input');
+            const typedWords = Array.from(inputs).map(inp => inp.value.trim().toLowerCase()).filter(val => val !== '');
+            
+            const chips = document.querySelectorAll('#lt-wordbank .word-chip');
+            
+            const typedFreq = {};
+            typedWords.forEach(w => typedFreq[w] = (typedFreq[w] || 0) + 1);
+            
+            chips.forEach(chip => {
+                const word = chip.dataset.word;
+                if (typedFreq[word] > 0) {
+                    chip.classList.add('used');
+                    typedFreq[word]--;
+                } else {
+                    chip.classList.remove('used');
+                }
+            });
         }
 
         function checkLueckentext() {
@@ -6951,6 +8195,7 @@
                     input.readOnly = true;
                 }
             }
+            updateWordBank();
         }
 
         // Initialize Erörterungs-Builder with one pro and one contra argument
