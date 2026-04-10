@@ -7752,190 +7752,288 @@
         // ==========================================
         // Game 4: Kanzler-Simulator (The Ultimate Game)
         // ==========================================
-        const ksDataPool = [
+        // --- KANZLER-SIMULATOR (GRAND STRATEGY) LOGIC ---
+        const advancedPoliticalEvents = [
+            // --- WIRTSCHAFT & FINANZEN ---
             {
-                title: "Die globale Lieferkettenkrise",
-                desc: "Ein internationaler Handelskonflikt (Q3.2) führt zu massiven Lieferengpässen. Die Inflation steigt auf 8%, gleichzeitig stagniert die Wirtschaft (Stagflation, Q2.1). Die Medien (Q1.4) werfen dir Untätigkeit vor.",
+                id: "w1", type: "Krise", module: "Wirtschaft & Finanzen",
+                title: "Rezessions-Schock",
+                desc: "Das BIP schrumpft im zweiten Quartal. Arbeitslosigkeit steigt. Die Medien fordern ein Eingreifen.",
+                memo: "Keynesianismus fordert 'Deficit Spending' (antizyklische Fiskalpolitik), um die Nachfrage zu stärken. Die Neoklassik (Angebotspolitik) warnt vor Staatsschulden und fordert Steuersenkungen für Unternehmen (Say'sches Theorem).",
                 opts: [
-                    {
-                        text: "Keynesianisches Konjunkturpaket auf Pump schnüren",
-                        eff: { w: 15, v: -20, i: 0, g: 10 },
-                        exp: "Du nutzt Deficit Spending (Q2.1). Das kurbelt die Nachfrage an, aber bei Stagflation heizt das die Inflation weiter an! Zudem strapazierst du die Schuldenbremse (Art. 109 GG, Q1.1) massiv, was verfassungsrechtlich hochproblematisch ist."
-                    },
-                    {
-                        text: "Lohnzurückhaltung fordern & Leitzins-Appell an EZB",
-                        eff: { w: 0, v: -15, i: -5, g: -10 },
-                        exp: "Du versuchst angebotsorientierte Politik (Q2.2). ABER: Die Einmischung in Löhne verletzt die Tarifautonomie (Art. 9 GG, Q2.4) und der Appell an die EZB verletzt deren politische Unabhängigkeit (Q2.1)!"
-                    },
-                    {
-                        text: "Strukturelle Reformen & Umschulungen fördern",
-                        eff: { w: 10, v: 5, i: 0, g: 5 },
-                        exp: "Ein langfristiger, angebotsorientierter Ansatz (Q2.2). Du verbesserst die Standortfaktoren, ohne die Verfassung zu brechen oder die Inflation durch künstliche Nachfrage weiter anzuheizen."
-                    }
+                    { text: "Konjunkturpaket (Infrastruktur & Konsumschecks)", cost: -15, eff: { economy: 15, society: 10, ecology: 0, international: 0, coalition: -5, inflation: 1.5 }, exp: "Keynesianische Nachfragepolitik. Erhöht die Schulden, kurbelt aber kurzfristig die Wirtschaft an.", news: "Konsumklima steigt spürbar an, aber Staatsschulden erreichen Rekordhoch." },
+                    { text: "Unternehmenssteuern senken & Deregulierung", cost: -10, eff: { economy: 10, society: -10, ecology: -5, international: 5, coalition: 5, inflation: 0.2 }, exp: "Angebotsorientierte Politik. Verbessert Standortbedingungen, führt aber zu sozialen Spannungen.", news: "DAX auf Rekordhoch, Gewerkschaften rufen zu Protesten auf." },
+                    { text: "Aussitzen und auf Selbstheilungskräfte vertrauen", cost: 0, eff: { economy: -15, society: -15, ecology: 0, international: 0, coalition: -10, inflation: -0.5 }, exp: "Strikte Neoklassik. Führt kurzfristig zu einer Verschärfung der Krise und politischem Vertrauensverlust.", news: "Arbeitslosenzahlen steigen weiter, Regierung in der Kritik." }
                 ]
             },
             {
-                title: "Extremismus im Netz",
-                desc: "Eine populistische Partei nutzt Social-Media-Algorithmen (Filterblasen, Q1.4), um gezielt Fake News zu verbreiten. Sie ruft offen zur Abschaffung der Pressefreiheit auf. Die Gesellschaft spaltet sich.",
+                id: "w2", type: "Meilenstein", module: "Wirtschaft & Finanzen",
+                title: "Mindestlohn-Debatte",
+                desc: "Gewerkschaften fordern eine drastische Erhöhung des Mindestlohns auf 15€ zum Ausgleich der Inflation.",
+                memo: "Ein höherer Mindestlohn stärkt die Kaufkraft (Nachfrage), kann aber laut neoklassischer Theorie zu Arbeitsplatzverlusten im Niedriglohnsektor führen und die Lohn-Preis-Spirale anheizen.",
                 opts: [
-                    {
-                        text: "Partei per Regierungsdekret sofort verbieten",
-                        eff: { w: 0, v: -30, i: -10, g: 10 },
-                        exp: "KRITISCHER VERFASSUNGSBRUCH! Das Parteienprivileg (Art. 21 GG, Q1.2) besagt eindeutig: Nur das Bundesverfassungsgericht darf eine Partei verbieten. Die Exekutive darf das niemals selbst tun (Gewaltenteilung, Q1.1)."
-                    },
-                    {
-                        text: "Antrag auf Parteienverbot beim BVerfG stellen",
-                        eff: { w: 0, v: 15, i: 5, g: 10 },
-                        exp: "Der korrekte Weg der 'Wehrhaften Demokratie' (Q1.1). Du nutzt die rechtsstaatlichen Mittel (Art. 21 GG), um Verfassungsfeinde zu bekämpfen, wahrst aber die Gewaltenteilung."
-                    },
-                    {
-                        text: "Zensurgesetz für Social Media erlassen",
-                        eff: { w: -5, v: -25, i: -10, g: -15 },
-                        exp: "Verstoß gegen Art. 5 GG (Meinungs- und Pressefreiheit). 'Eine Zensur findet nicht statt.' Der Kampf gegen Fake News (Q1.4) darf nicht die Grundrechte aushebeln."
-                    }
+                    { text: "Mindestlohn auf 15€ erhöhen", cost: 0, eff: { economy: -5, society: 15, ecology: 0, international: 0, coalition: -10, inflation: 1.0 }, exp: "Stärkt den sozialen Frieden und die Binnennachfrage, belastet aber kleine Unternehmen.", news: "Kaufkraft der unteren Einkommen gestiegen, erste Bäcker müssen schließen." },
+                    { text: "Moderate Erhöhung durch Mindestlohnkommission", cost: 0, eff: { economy: 5, society: -5, ecology: 0, international: 0, coalition: 5, inflation: 0.3 }, exp: "Wahrt die Tarifautonomie und verhindert Schocks, enttäuscht aber Geringverdiener.", news: "Gewerkschaften unzufrieden mit 'Mini-Erhöhung' des Mindestlohns." },
+                    { text: "Mindestlohn einfrieren", cost: 0, eff: { economy: 10, society: -20, ecology: 0, international: 5, coalition: -5, inflation: -0.2 }, exp: "Senkt Lohnstückkosten und hilft der Exportwirtschaft, führt aber zu Reallohnverlusten.", news: "Armutsrisiko steigt, Exportwirtschaft vermeldet Rekordgewinne." }
                 ]
             },
             {
-                title: "Klimaschutz vs. Wettbewerbsfähigkeit",
-                desc: "Die UN fordert drastischere CO2-Ziele (Q3.5). Die deutsche Industrie warnt vor einem 'Race to the bottom' (Q3.2) und droht mit Abwanderung ins Ausland, wenn die Produktionskosten (Angebotspolitik, Q2.2) weiter steigen.",
+                id: "w3", type: "Normal", module: "Wirtschaft & Finanzen",
+                title: "Schuldenbremse lockern?",
+                desc: "Wichtige Infrastrukturprojekte (Bahn, Brücken) stocken wegen Geldmangel. Ein Aussetzen der Schuldenbremse wird diskutiert.",
+                memo: "Art. 109 GG schreibt einen grundsätzlich ausgeglichenen Haushalt vor. Ausnahmen gibt es nur bei Naturkatastrophen oder schweren Wirtschaftskrisen. Investitionen in die Zukunft stehen gegen Generationengerechtigkeit bei Staatsschulden.",
                 opts: [
-                    {
-                        text: "Nationale CO2-Steuer massiv erhöhen",
-                        eff: { w: -20, v: 0, i: 15, g: 5 },
-                        exp: "Gut für die internationale Umweltpolitik (Q3.5), aber ein harter Schlag für die nationale Angebotspolitik (Q2.2). Die Lohnstückkosten und Produktionskosten steigen, Unternehmen wandern ab (Standortwettbewerb)."
-                    },
-                    {
-                        text: "EU-weiten Emissionshandel (Zertifikate) vorantreiben",
-                        eff: { w: 10, v: 5, i: 15, g: 10 },
-                        exp: "Ein marktwirtschaftliches, ordnungspolitisches Instrument (Q2.2). Durch die EU-weite Lösung verhinderst du Wettbewerbsnachteile im Binnenmarkt und erfüllst internationale Pflichten (Q3.5)."
-                    },
-                    {
-                        text: "UN-Ziele ignorieren, Kohlesubventionen erhöhen",
-                        eff: { w: 15, v: -5, i: -25, g: -15 },
-                        exp: "Kurzfristig gut für die heimische Industrie (Protektionismus), aber du brichst völkerrechtliche Verträge (Q3.1) und ignorierst die globalen ökologischen Herausforderungen (Q3.5)."
-                    }
+                    { text: "Sondervermögen über Grundgesetzänderung (2/3 Mehrheit)", cost: 20, eff: { economy: 10, society: 5, ecology: 5, international: 0, coalition: -15, inflation: 0.8 }, exp: "Sichert Investitionen rechtssicher ab, erfordert aber massive politische Kompromisse mit der Opposition.", news: "Infrastruktur-Offensive gestartet, Opposition feiert Zugeständnisse." },
+                    { text: "Schattenhaushalte nutzen (Kreditermächtigungen umbuchen)", cost: 15, eff: { economy: 5, society: 0, ecology: 0, international: 0, coalition: -5, inflation: 0.5 }, exp: "Hochriskant! Das BVerfG könnte dies als verfassungswidrig einstufen (wie 2023 geschehen).", news: "Verfassungsklage gegen Haushaltstricks der Regierung eingereicht." },
+                    { text: "Striktes Sparen (Projekte streichen)", cost: -10, eff: { economy: -10, society: -10, ecology: -5, international: 0, coalition: 10, inflation: -0.5 }, exp: "Sichert den Haushalt, führt aber zu einem Investitionsstau und schwächt den Standort langfristig.", news: "Bahnnetz verfällt weiter, aber Finanzminister feiert 'Schwarze Null'." }
                 ]
             },
             {
-                title: "Der Mega-Streik",
-                desc: "Die Gewerkschaften fordern 12% mehr Lohn (Inflationsausgleich). Die Arbeitgeber bieten 2%. Ein unbefristeter Streik im Transportsektor droht die gesamte Wirtschaft lahmzulegen (Q2.4).",
+                id: "w4", type: "Krise", module: "Wirtschaft & Finanzen",
+                title: "Hyperinflation droht",
+                desc: "Die Inflationsrate springt auf 8%. Bürger können sich Lebensmittel kaum noch leisten.",
+                memo: "Geldpolitik ist Aufgabe der EZB (Leitzinserhöhung). Die Fiskalpolitik der Regierung kann nur lindern (Subventionen) oder die Nachfrage drosseln. Das Magische Sechseck zeigt den Zielkonflikt: Preisniveaustabilität vs. Wirtschaftswachstum.",
                 opts: [
-                    {
-                        text: "Per Notstandsgesetz einen Kompromiss von 7% diktieren",
-                        eff: { w: 10, v: -30, i: 0, g: -20 },
-                        exp: "MASSIVER VERFASSUNGSBRUCH! Du verletzt die Tarifautonomie (Art. 9 GG, Q2.4) und die Koalitionsfreiheit. Der Staat darf keine Löhne diktieren."
-                    },
-                    {
-                        text: "Staatliche Schlichter anbieten, aber Autonomie wahren",
-                        eff: { w: 5, v: 10, i: 0, g: 15 },
-                        exp: "Der rechtsstaatlich korrekte Weg. Du respektierst die Tarifautonomie (Q2.4) der Sozialpartner, hilfst aber moderierend bei der Konfliktlösung."
-                    },
-                    {
-                        text: "Streikrecht für systemrelevante Berufe abschaffen",
-                        eff: { w: 15, v: -35, i: -10, g: -25 },
-                        exp: "Ein direkter Angriff auf die Grundrechte (Art. 9 Abs. 3 GG). Das Streikrecht ist ein elementarer Bestandteil der Tarifautonomie und der Demokratie (Q1.1)."
-                    }
+                    { text: "Preisbremsen für Energie & Lebensmittel (Subventionen)", cost: -20, eff: { economy: -5, society: 15, ecology: -5, international: 0, coalition: 0, inflation: -1.0 }, exp: "Lindert die Symptome sozial, ist aber extrem teuer und bekämpft nicht die Ursache (Geldmenge).", news: "Bürger atmen auf: Staatliche Preisbremsen wirken kurzfristig." },
+                    { text: "EZB öffentlich zur Leitzinserhöhung auffordern", cost: 0, eff: { economy: -10, society: -5, ecology: 0, international: -10, coalition: -5, inflation: -2.0 }, exp: "Verletzt die politische Unabhängigkeit der EZB! Führt zu diplomatischen Spannungen in der EU.", news: "EZB-Chefin verbittet sich Einmischung der Bundesregierung." },
+                    { text: "Mehrwertsteuer senken", cost: -15, eff: { economy: 5, society: 10, ecology: 0, international: 0, coalition: 5, inflation: -0.5 }, exp: "Gießkannenprinzip. Teuer für den Staat, oft geben Unternehmen die Senkung nicht an Kunden weiter.", news: "Steuersenkung verpufft teilweise als Zusatzgewinn für Konzerne." }
                 ]
             },
             {
-                title: "Das Misstrauensvotum",
-                desc: "Deine Koalition zerbricht an einem Streit über Sozialpolitik (Bedarfs- vs. Leistungsgerechtigkeit, Q2.4). Die Opposition bringt ein Konstruktives Misstrauensvotum (Art. 67 GG) ein.",
+                id: "w5", type: "Normal", module: "Wirtschaft & Finanzen",
+                title: "Subventionswettlauf",
+                desc: "Die USA locken mit dem 'Inflation Reduction Act' grüne Technologien an. Deutsche Unternehmen drohen mit Abwanderung.",
+                memo: "Subventionen verzerren den freien Wettbewerb (Ordnungspolitik). Ein Subventionswettlauf kostet Milliarden, kann aber strategisch wichtige Industrien im Land halten.",
                 opts: [
-                    {
-                        text: "Den Bundestag sofort per Dekret auflösen",
-                        eff: { w: -10, v: -40, i: -15, g: -20 },
-                        exp: "Diktatorisches Handeln! Der Kanzler kann den Bundestag nicht auflösen. Das geht nur über die Vertrauensfrage (Art. 68 GG) und den Bundespräsidenten (Q1.1)."
-                    },
-                    {
-                        text: "Die Vertrauensfrage (Art. 68 GG) stellen",
-                        eff: { w: 0, v: 15, i: 5, g: 10 },
-                        exp: "Der verfassungskonforme Weg (Q1.1). Du testest, ob du noch eine Mehrheit hast. Verlierst du sie, kann der Bundespräsident den Bundestag auflösen und es gibt Neuwahlen."
-                    },
-                    {
-                        text: "Dem Oppositionsführer das Rederecht entziehen",
-                        eff: { w: 0, v: -35, i: -10, g: -25 },
-                        exp: "Ein eklatanter Verstoß gegen das freie Mandat (Art. 38 GG) und die parlamentarische Demokratie (Q1.1)."
-                    }
+                    { text: "Mit Milliarden-Subventionen gegenhalten", cost: -20, eff: { economy: 10, society: 0, ecology: 5, international: -5, coalition: 0, inflation: 0.5 }, exp: "Sichert Standorte, belastet aber den Haushalt massiv und führt zu ineffizienter Ressourcenallokation.", news: "Intel und Tesla bauen neue Werke in Deutschland dank Staatshilfen." },
+                    { text: "Auf EU-Ebene klagen (WTO-Regeln)", cost: 0, eff: { economy: -5, society: 0, ecology: 0, international: 10, coalition: 5, inflation: 0 }, exp: "Pocht auf Freihandel und Regeln, dauert aber Jahre. Bis dahin sind Unternehmen abgewandert.", news: "WTO-Klage läuft, während erste Tech-Konzerne nach Übersee abwandern." },
+                    { text: "Standortfaktoren (Steuern, Bürokratie) verbessern", cost: -10, eff: { economy: 15, society: -5, ecology: 0, international: 5, coalition: 5, inflation: 0 }, exp: "Nachhaltige Angebotspolitik. Dauert länger in der Umsetzung, vermeidet aber einen teuren Subventionskrieg.", news: "Bürokratieabbau-Gesetz verabschiedet: Mittelstand atmet auf." }
+                ]
+            },
+            // --- SOZIALSTAAT & DEMOGRAFIE ---
+            {
+                id: "s1", type: "Meilenstein", module: "Sozialstaat & Demografie",
+                title: "Rentenreform 2026",
+                desc: "Der demografische Wandel schlägt zu. Immer weniger Beitragszahler finanzieren immer mehr Rentner. Die Rentenkasse droht zu kollabieren.",
+                memo: "Das Umlageverfahren (Generationenvertrag) stößt an Grenzen. Optionen: Renteneintrittsalter hoch, Beiträge hoch, Rentenniveau runter oder Steuerzuschüsse erhöhen. Alles ist unpopulär.",
+                opts: [
+                    { text: "Renteneintrittsalter auf 69 Jahre erhöhen", cost: 10, eff: { economy: 5, society: -25, ecology: 0, international: 0, coalition: -10, inflation: 0 }, exp: "Sichert die Finanzierbarkeit (Generationengerechtigkeit), führt aber zu massiven Protesten der älteren Wähler.", news: "Massenproteste gegen 'Rente mit 69' legen Innenstädte lahm." },
+                    { text: "Aktienrente (Generationenkapital) einführen", cost: -10, eff: { economy: 10, society: 5, ecology: 0, international: 5, coalition: 5, inflation: 0.5 }, exp: "Ergänzt das Umlageverfahren durch Kapitaldeckung. Langfristig sinnvoll, kurzfristig teuer im Aufbau.", news: "Staatlicher Rentenfonds investiert Milliarden an den globalen Aktienmärkten." },
+                    { text: "Beitragssätze für Arbeitnehmer & Geber massiv erhöhen", cost: 0, eff: { economy: -15, society: -10, ecology: 0, international: -5, coalition: -5, inflation: 0.5 }, exp: "Erhöht die Lohnnebenkosten drastisch. Schlecht für den Standort Deutschland (Angebotspolitik).", news: "Rekord-Lohnnebenkosten: Erste Unternehmen verlagern Produktion ins Ausland." }
                 ]
             },
             {
+                id: "s2", type: "Normal", module: "Sozialstaat & Demografie",
+                title: "Bürgergeld-Debatte",
+                desc: "Die Opposition fordert härtere Sanktionen beim Bürgergeld, da angeblich das Lohnabstandsgebot nicht mehr gewahrt sei.",
+                memo: "Das Sozialstaatsprinzip (Art. 20 GG) garantiert ein menschenwürdiges Existenzminimum. Sanktionen dürfen dieses laut BVerfG nicht komplett streichen (max. 30%).",
+                opts: [
+                    { text: "Sanktionen verschärfen (bis zu 100% Kürzung)", cost: 5, eff: { economy: 5, society: -15, ecology: 0, international: 0, coalition: -15, inflation: 0 }, exp: "Verfassungswidrig! Das BVerfG hat 100%-Kürzungen verboten, da das Existenzminimum unantastbar ist (Art. 1 GG).", news: "Verfassungsgericht kippt harte Bürgergeld-Sanktionen der Regierung." },
+                    { text: "Fokus auf Weiterbildung und Vermittlung (Fördern)", cost: -5, eff: { economy: 5, society: 10, ecology: 0, international: 0, coalition: 5, inflation: 0 }, exp: "Langfristiger Ansatz zur Bekämpfung von Strukturarbeitslosigkeit. Kostet zunächst Geld für Maßnahmen.", news: "Weiterbildungsoffensive zeigt erste Erfolge bei Langzeitarbeitslosen." },
+                    { text: "Bürgergeld generell kürzen", cost: 10, eff: { economy: 5, society: -20, ecology: 0, international: 0, coalition: -10, inflation: -0.2 }, exp: "Erhöht den Druck zur Arbeitsaufnahme, treibt aber Menschen in die Armut und schwächt die Binnennachfrage.", news: "Tafeln melden Rekord-Andrang nach Bürgergeld-Kürzungen." }
+                ]
+            },
+            {
+                id: "s3", type: "Krise", module: "Sozialstaat & Demografie",
+                title: "Pflege-Kollaps",
+                desc: "Tausende Pflegekräfte kündigen wegen Überlastung. Krankenhäuser müssen Stationen schließen.",
+                memo: "Ein Marktversagen im Gesundheitssektor. Der Staat muss ordnungspolitisch eingreifen, um die Daseinsvorsorge (Sozialstaat) zu sichern.",
+                opts: [
+                    { text: "Pflege-Mindestlohn drastisch erhöhen & Boni zahlen", cost: -15, eff: { economy: -5, society: 15, ecology: 0, international: 0, coalition: 5, inflation: 0.5 }, exp: "Macht den Beruf attraktiver, belastet aber die Pflegekassen und den Bundeshaushalt massiv.", news: "Mehr Auszubildende in der Pflege, aber Kassenbeiträge steigen." },
+                    { text: "Ausländische Fachkräfte massiv anwerben", cost: -5, eff: { economy: 5, society: 5, ecology: 0, international: 10, coalition: -5, inflation: 0 }, exp: "Lindert den Mangel schnell. Erfordert aber Bürokratieabbau bei der Anerkennung von Abschlüssen und Integration.", news: "Integration von Pflegekräften aus Übersee entlastet Kliniken." },
+                    { text: "Krankenhäuser privatisieren (Marktlösung)", cost: 10, eff: { economy: 10, society: -25, ecology: 0, international: 0, coalition: -15, inflation: 0 }, exp: "Führt zu Effizienzgewinnen, aber unrentable ländliche Kliniken werden geschlossen. Gefährdet die flächendeckende Versorgung.", news: "Klinik-Sterben auf dem Land: Bürger protestieren gegen Privatisierung." }
+                ]
+            },
+            {
+                id: "s4", type: "Meilenstein", module: "Sozialstaat & Demografie",
+                title: "Kindergrundsicherung",
+                desc: "Jedes fünfte Kind lebt in Armut. Ein Bündnis fordert die Zusammenlegung aller Familienleistungen zu einer automatischen Kindergrundsicherung.",
+                memo: "Sozialstaatliche Umverteilung. Reduziert Bürokratie und Holschulden, kostet aber den Staat deutlich mehr Geld, da die Inanspruchnahme steigt.",
+                opts: [
+                    { text: "Umfassende Kindergrundsicherung einführen", cost: -15, eff: { economy: 5, society: 20, ecology: 0, international: 0, coalition: -10, inflation: 0.5 }, exp: "Bekämpft Kinderarmut effektiv und stärkt die Konsumnachfrage, reißt aber ein Loch in den Haushalt.", news: "Kinderarmut sinkt spürbar nach Einführung der Kindergrundsicherung." },
+                    { text: "Nur Verwaltungsdigitalisierung (Leistungen bleiben gleich)", cost: -5, eff: { economy: 0, society: 5, ecology: 0, international: 0, coalition: 10, inflation: 0 }, exp: "Kostengünstiger Kompromiss. Erleichtert den Zugang, erhöht die Leistungen aber nicht substanziell.", news: "Familienleistungen jetzt per App beantragbar, aber Beträge stagnieren." },
+                    { text: "Fokus auf Sachleistungen (Kostenlose Kitas & Essen)", cost: -10, eff: { economy: 5, society: 15, ecology: 0, international: 0, coalition: 5, inflation: 0 }, exp: "Stellt sicher, dass die Hilfe direkt beim Kind ankommt. Fördert zudem die Vereinbarkeit von Familie und Beruf.", news: "Kostenlose Kitas bundesweit eingeführt: Eltern massiv entlastet." }
+                ]
+            },
+            // --- INTERNATIONALE BEZIEHUNGEN ---
+            {
+                id: "i1", type: "Krise", module: "Internationale Beziehungen",
+                title: "Handelskrieg USA-China",
+                desc: "Die USA und China überziehen sich mit Strafzöllen. Die exportabhängige deutsche Wirtschaft gerät zwischen die Fronten.",
+                memo: "Protektionismus schadet dem Freihandel (WTO-Prinzipien). Deutschland als Exportnation ist auf offene Märkte angewiesen (Globalisierung, Q3.2).",
+                opts: [
+                    { text: "Auf Seite der USA stellen und China sanktionieren", cost: -10, eff: { economy: -15, society: 0, ecology: 0, international: 5, coalition: -5, inflation: 1.0 }, exp: "Stärkt das transatlantische Bündnis, führt aber zu massiven Exporteinbrüchen in China (wichtigster Handelspartner).", news: "Deutsche Autoindustrie meldet Gewinneinbruch wegen China-Sanktionen." },
+                    { text: "EU-weite Antwort koordinieren (Multilateralismus)", cost: 0, eff: { economy: 5, society: 5, ecology: 0, international: 15, coalition: 10, inflation: 0.2 }, exp: "Gemeinsames Auftreten der EU stärkt die Verhandlungsposition gegenüber beiden Supermächten.", news: "EU tritt geschlossen im Handelskrieg auf, deutsche Exporte stabilisieren sich." },
+                    { text: "Bilaterale Sonderabkommen mit China schließen", cost: 5, eff: { economy: 10, society: -5, ecology: 0, international: -20, coalition: -10, inflation: 0 }, exp: "Sichert kurzfristig Profite, bricht aber die EU-Solidarität und verärgert die USA massiv.", news: "Washington droht Berlin wegen 'Alleingang' mit China." }
+                ]
+            },
+            {
+                id: "i2", type: "Meilenstein", module: "Internationale Beziehungen",
+                title: "EU-Erweiterung",
+                desc: "Mehrere Balkanstaaten fordern den schnellen EU-Beitritt. Sie erfüllen die Kopenhagener Kriterien noch nicht vollständig.",
+                memo: "Die EU-Integration (Q3.1) steht im Spannungsfeld zwischen 'Erweiterung' (geopolitische Stabilität) und 'Vertiefung' (Handlungsfähigkeit der EU-Institutionen).",
+                opts: [
+                    { text: "Schneller Beitritt aus geopolitischen Gründen", cost: -10, eff: { economy: 5, society: -10, ecology: -5, international: 10, coalition: -5, inflation: 0.5 }, exp: "Verhindert den Einfluss anderer Mächte auf dem Balkan, schwächt aber die EU-Institutionen und kostet Nettozahler viel Geld.", news: "EU wächst, aber Entscheidungsprozesse in Brüssel blockieren zunehmend." },
+                    { text: "Strikte Einhaltung der Kriterien fordern (Verzögerung)", cost: 0, eff: { economy: 0, society: 5, ecology: 0, international: -5, coalition: 5, inflation: 0 }, exp: "Sichert die Rechtsstaatlichkeit in der EU, frustriert aber die Kandidatenländer.", news: "Balkanstaaten enttäuscht über stockende EU-Beitrittsverhandlungen." },
+                    { text: "Abgestufte Integration (Zwei-Klassen-EU) vorschlagen", cost: 0, eff: { economy: 5, society: 0, ecology: 0, international: 10, coalition: 0, inflation: 0 }, exp: "Ein pragmatischer Kompromiss. Erlaubt wirtschaftliche Anbindung ohne volles politisches Veto-Recht.", news: "Konzept der 'Zwei-Klassen-EU' findet Anklang in Paris und Warschau." }
+                ]
+            },
+            {
+                id: "i3", type: "Krise", module: "Internationale Beziehungen",
                 title: "UN-Blauhelm-Mission",
-                desc: "Der UN-Sicherheitsrat (Q3.1) verabschiedet eine bindende Resolution zur Friedenssicherung in einem Bürgerkriegsland. Die UN bittet Deutschland dringend um Truppen.",
+                desc: "Der UN-Sicherheitsrat verabschiedet eine Resolution zur Friedenssicherung in einem Bürgerkriegsland. Deutschland wird um Truppen gebeten.",
+                memo: "Die Bundeswehr ist eine Parlamentsarmee. Auslandseinsätze erfordern zwingend ein Mandat des Bundestages. Deutschland hat als UN-Mitglied Pflichten im System kollektiver Sicherheit.",
                 opts: [
-                    {
-                        text: "Bundeswehr sofort per Regierungsbeschluss entsenden",
-                        eff: { w: -5, v: -25, i: 15, g: -10 },
-                        exp: "Verstoß gegen den Parlamentsvorbehalt! Die Bundeswehr ist eine Parlamentsarmee (Q1.1). Auslandseinsätze müssen zwingend vorher vom Bundestag gebilligt werden."
-                    },
-                    {
-                        text: "Mandat im Bundestag zur Abstimmung einbringen",
-                        eff: { w: -5, v: 15, i: 15, g: 5 },
-                        exp: "Korrekt! Du wahrst die Rechte der Legislative (Q1.1) und erfüllst gleichzeitig Deutschlands Pflichten im System kollektiver Sicherheit (UN, Q3.1)."
-                    },
-                    {
-                        text: "Ablehnen: 'Deutschland mischt sich nicht ein'",
-                        eff: { w: 5, v: 0, i: -25, g: -5 },
-                        exp: "Das isoliert Deutschland außenpolitisch und schwächt die UN als Akteur der kollektiven Friedenssicherung (Q3.1)."
-                    }
+                    { text: "Bundeswehr sofort per Regierungsbeschluss entsenden", cost: -5, eff: { economy: 0, society: -10, ecology: 0, international: 10, coalition: -20, inflation: 0 }, exp: "VERFASSUNGSBRUCH! Der Parlamentsvorbehalt wurde ignoriert. Das BVerfG wird den Einsatz stoppen.", news: "Verfassungsgericht stoppt illegalen Bundeswehr-Einsatz der Regierung." },
+                    { text: "Mandat im Bundestag zur Abstimmung einbringen", cost: -5, eff: { economy: 0, society: 5, ecology: 0, international: 15, coalition: 5, inflation: 0 }, exp: "Verfassungskonform. Wahrung der Parlamentsrechte und Erfüllung internationaler Pflichten.", news: "Bundestag stimmt UN-Mandat zu, deutsche Blauhelme verlegen ins Krisengebiet." },
+                    { text: "Truppensteller-Anfrage der UN ablehnen", cost: 0, eff: { economy: 0, society: 5, ecology: 0, international: -15, coalition: 0, inflation: 0 }, exp: "Isoliert Deutschland außenpolitisch und schwächt die UN als Akteur der Friedenssicherung.", news: "UN-Partner kritisieren deutsche Zurückhaltung bei Friedensmission." }
                 ]
             },
             {
-                title: "Die Schuldenbremse wackelt",
-                desc: "Wirtschaftsforscher prognostizieren eine schwere Rezession (Q2.1). Du willst ein massives keynesianisches Konjunkturpaket schnüren, aber die im Grundgesetz verankerte Schuldenbremse (Art. 109 GG) ist erreicht.",
+                id: "i4", type: "Krise", module: "Internationale Beziehungen",
+                title: "Flüchtlingskrise 2.0",
+                desc: "Aufgrund von Kriegen und Klimawandel steigen die Asylzahlen drastisch an. Kommunen sind überlastet.",
+                memo: "Das Asylrecht (Art. 16a GG) ist ein Grundrecht. Gleichzeitig erfordert die praktische Umsetzung europäische Solidarität (Dublin-System), die oft nicht funktioniert.",
                 opts: [
-                    {
-                        text: "Schuldenbremse ignorieren, Wirtschaft hat Vorrang",
-                        eff: { w: 15, v: -25, i: 0, g: 5 },
-                        exp: "Verfassungsbruch! Die Schuldenbremse (Art. 109 GG, Q1.1) ist bindend. Ein einfaches Ignorieren durch die Exekutive zerstört das Rechtsstaatsprinzip."
-                    },
-                    {
-                        text: "Notlagenklausel im Bundestag beantragen",
-                        eff: { w: 10, v: 15, i: 0, g: 5 },
-                        exp: "Verfassungskonform (Q1.1). Bei außergewöhnlichen Notsituationen kann der Bundestag die Schuldenbremse aussetzen, muss aber einen Tilgungsplan beschließen."
-                    },
-                    {
-                        text: "Steuern in der Krise massiv erhöhen",
-                        eff: { w: -25, v: 5, i: 0, g: -20 },
-                        exp: "Ein fataler ökonomischer Fehler (Prozyklische Politik, Q2.1). Steuererhöhungen in der Rezession würgen die ohnehin schwache Nachfrage komplett ab."
-                    }
+                    { text: "Grenzen schließen & Asylrecht aussetzen", cost: 0, eff: { economy: -5, society: -20, ecology: 0, international: -25, coalition: -20, inflation: 0 }, exp: "Verfassungs- und Völkerrechtsbruch! Das BVerfG und der EuGH werden dies sofort stoppen.", news: "Internationale Empörung über deutsche Grenzschließungen." },
+                    { text: "EU-Asylkompromiss (GEAS) mit harten Außengrenzen", cost: -5, eff: { economy: 0, society: 10, ecology: 0, international: 10, coalition: 5, inflation: 0 }, exp: "Realpolitischer Kompromiss auf EU-Ebene. Sichert offene Binnengrenzen (Schengen), ist aber menschenrechtlich umstritten.", news: "Neues EU-Asylsystem senkt Ankunftszahlen, Menschenrechtler klagen." },
+                    { text: "Kommunen massiv finanziell unterstützen", cost: -15, eff: { economy: 5, society: 15, ecology: 0, international: 5, coalition: 0, inflation: 0.5 }, exp: "Löst das Problem vor Ort und sichert die Integration, belastet aber den Bundeshaushalt extrem.", news: "Milliarden-Hilfen für Kommunen verhindern Kollaps bei der Unterbringung." }
+                ]
+            },
+            // --- ÖKOLOGIE VS. ÖKONOMIE ---
+            {
+                id: "o1", type: "Meilenstein", module: "Ökologie vs. Ökonomie",
+                title: "CO2-Bepreisung",
+                desc: "Um die Pariser Klimaziele zu erreichen, muss der CO2-Ausstoß sinken. Die Frage ist: Wie?",
+                memo: "Umweltverschmutzung ist ein 'negativer externer Effekt'. Der Staat muss diese Kosten internalisieren. Optionen: Pigou-Steuer (Ordnungsrecht) oder Emissionshandel (Marktlösung).",
+                opts: [
+                    { text: "Nationale CO2-Steuer massiv erhöhen", cost: 15, eff: { economy: -15, society: -15, ecology: 20, international: 5, coalition: -10, inflation: 2.0 }, exp: "Wirkt sofort, verteuert aber Energie drastisch (Inflation) und schadet der Wettbewerbsfähigkeit der Industrie.", news: "Hohe CO2-Steuer treibt Benzinpreise auf Rekordhoch, Bürger protestieren." },
+                    { text: "EU-Emissionshandel (Zertifikate) ausweiten", cost: 5, eff: { economy: -5, society: -5, ecology: 15, international: 10, coalition: 5, inflation: 0.5 }, exp: "Marktwirtschaftliche Lösung. Die Menge an CO2 wird gedeckelt, der Preis bildet sich am Markt. Verhindert nationale Alleingänge.", news: "EU-weiter Emissionshandel führt zu effizienter CO2-Reduktion in der Industrie." },
+                    { text: "Freiwillige Selbstverpflichtung der Industrie", cost: 0, eff: { economy: 10, society: -10, ecology: -20, international: -10, coalition: -5, inflation: 0 }, exp: "Ökonomisch bequem, aber ökologisch wirkungslos (Trittbrettfahrer-Problem). Klimaziele werden krachend verfehlt.", news: "Klimaziele krachend verfehlt: Freiwilligkeit der Industrie gescheitert." }
                 ]
             },
             {
-                title: "EZB-Konflikt",
-                desc: "Die Europäische Zentralbank (EZB) kauft massiv Staatsanleihen (Geldpolitik, Q2.1). Das Bundesverfassungsgericht rügt dies als Kompetenzüberschreitung. Die EU-Kommission droht Deutschland mit einem Vertragsverletzungsverfahren.",
+                id: "o2", type: "Krise", module: "Ökologie vs. Ökonomie",
+                title: "Energie-Schock",
+                desc: "Ein Lieferstopp für Gas führt zu explodierenden Energiepreisen. Die Industrie droht mit Produktionsstopps.",
+                memo: "Zielkonflikt im Magischen Sechseck: Umweltschutz vs. Wirtschaftswachstum. Kurzfristige Versorgungssicherheit steht gegen langfristige Klimaziele.",
                 opts: [
-                    {
-                        text: "Der EZB befehlen, die Käufe sofort zu stoppen",
-                        eff: { w: -10, v: -20, i: -15, g: -5 },
-                        exp: "Verstoß gegen EU-Recht! Die EZB ist politisch absolut unabhängig (Q2.1). Weder nationale Regierungen noch EU-Organe dürfen ihr Weisungen erteilen."
-                    },
-                    {
-                        text: "Urteil respektieren, auf EU-Ebene vermitteln",
-                        eff: { w: 0, v: 15, i: 10, g: 5 },
-                        exp: "Du respektierst die Unabhängigkeit der EZB und die Rolle des BVerfG (Gewaltenteilung, Q1.1) im Mehrebenensystem der EU."
-                    },
-                    {
-                        text: "Das Urteil des Bundesverfassungsgerichts ignorieren",
-                        eff: { w: 5, v: -35, i: 10, g: -15 },
-                        exp: "Schwerer Verfassungsbruch! Urteile des BVerfG binden alle Verfassungsorgane (Q1.1). Ignorierst du es, hebelst du den Rechtsstaat aus."
-                    }
+                    { text: "Kohlekraftwerke reaktivieren (Ausstieg verschieben)", cost: -5, eff: { economy: 10, society: 5, ecology: -25, international: -5, coalition: -10, inflation: -1.0 }, exp: "Sichert die Energieversorgung und senkt Preise, ist aber ein klimapolitischer Offenbarungseid.", news: "Deutschland verfehlt Klimaziele wegen Rückkehr zur Kohlekraft." },
+                    { text: "Massive Subventionen für Erneuerbare Energien", cost: -20, eff: { economy: 5, society: 5, ecology: 15, international: 5, coalition: 5, inflation: 0.5 }, exp: "Beschleunigt die Transformation, ist aber extrem teuer und löst das kurzfristige Blackout-Risiko nicht sofort.", news: "Solar-Boom in Deutschland, aber Netzausbau hinkt hinterher." },
+                    { text: "Industrie drosseln (Rationierung)", cost: 0, eff: { economy: -25, society: -10, ecology: 10, international: 0, coalition: -15, inflation: 2.0 }, exp: "Schützt die Umwelt und die Netze, führt aber zu einer tiefen Rezession und massiven Jobverlusten.", news: "Produktionsstopps in der Schwerindustrie führen zu Massenentlassungen." }
+                ]
+            },
+            {
+                id: "o3", type: "Normal", module: "Ökologie vs. Ökonomie",
+                title: "Das Klimageld",
+                desc: "Die Einnahmen aus der CO2-Bepreisung sprudeln. Wie sollen diese Gelder verwendet werden?",
+                memo: "Sozialer Ausgleich ist wichtig für die Akzeptanz von Klimapolitik. Eine Pro-Kopf-Rückerstattung (Klimageld) entlastet untere Einkommen überproportional.",
+                opts: [
+                    { text: "Klimageld als Pro-Kopf-Prämie auszahlen", cost: -15, eff: { economy: 5, society: 20, ecology: 0, international: 0, coalition: 5, inflation: 0.5 }, exp: "Sozial gerecht. Wer wenig CO2 verbraucht, profitiert. Stärkt die Akzeptanz für Klimaschutz.", news: "Bürger freuen sich über Auszahlung des Klimageldes." },
+                    { text: "Geld in grüne Infrastruktur investieren (Bahn, Netze)", cost: -15, eff: { economy: 10, society: 0, ecology: 15, international: 5, coalition: 5, inflation: 0 }, exp: "Sinnvolle Investition in die Zukunft, aber der direkte soziale Ausgleich für hohe Energiepreise fehlt.", news: "Milliarden-Investitionen in das Bahnnetz zeigen erste Erfolge." },
+                    { text: "Geld zur Haushaltskonsolidierung nutzen (Schuldenabbau)", cost: 15, eff: { economy: -5, society: -15, ecology: -5, international: 0, coalition: -10, inflation: -0.5 }, exp: "Gut für den Haushalt, aber ein Vertrauensbruch gegenüber den Bürgern, denen ein Ausgleich versprochen wurde.", news: "Wut über 'Klima-Abzocke': Regierung behält CO2-Einnahmen ein." }
+                ]
+            },
+            {
+                id: "o4", type: "Normal", module: "Ökologie vs. Ökonomie",
+                title: "Verbrenner-Ausstieg",
+                desc: "Die EU plant das Aus für neue Verbrennermotoren ab 2035. Die deutsche Autoindustrie fordert Ausnahmen für E-Fuels.",
+                memo: "Strukturwandel. Technologieoffenheit (Markt entscheidet) vs. klare staatliche Regulierung (Planungssicherheit). E-Fuels sind ineffizient, könnten aber Bestandsflotten klimaneutral machen.",
+                opts: [
+                    { text: "Striktes EU-Verbot unterstützen (Nur noch E-Autos)", cost: 0, eff: { economy: -5, society: 5, ecology: 15, international: 10, coalition: -10, inflation: 0 }, exp: "Schafft klare Planungssicherheit für die Industrie und hilft dem Klima, gefährdet aber Arbeitsplätze bei Zulieferern.", news: "Deutsche Autoindustrie stellt komplett auf Elektromobilität um." },
+                    { text: "Ausnahme für E-Fuels auf EU-Ebene durchboxen", cost: 0, eff: { economy: 10, society: 0, ecology: -5, international: -10, coalition: 10, inflation: 0 }, exp: "Sichert Arbeitsplätze im klassischen Motorenbau, verärgert aber EU-Partner und verzögert die Transformation.", news: "Deutschland blockiert EU-Klimagesetz: Ausnahme für E-Fuels gesichert." },
+                    { text: "Massive Kaufprämien für E-Autos wiedereinführen", cost: -15, eff: { economy: 10, society: 10, ecology: 10, international: 0, coalition: 0, inflation: 0.5 }, exp: "Teure Subvention (Mitnahmeeffekte!). Kurbelt den Absatz an, löst aber nicht das Problem der Ladeinfrastruktur.", news: "E-Auto-Verkäufe brechen Rekorde dank neuer staatlicher Prämien." }
+                ]
+            },
+            // --- VERFASSUNG & RECHT ---
+            {
+                id: "v1", type: "Krise", module: "Verfassung & Recht",
+                title: "Überwachungsgesetz",
+                desc: "Nach einer Anschlagsserie fordert der Innenminister weitreichende Befugnisse zur Überwachung von Messenger-Diensten ohne richterlichen Beschluss.",
+                memo: "Spannungsverhältnis: Sicherheit vs. Freiheit. Art. 10 GG (Brief-, Post- und Fernmeldegeheimnis) schützt die Kommunikation. Eingriffe bedürfen strikter Verhältnismäßigkeit.",
+                opts: [
+                    { text: "Gesetz durchwinken (Sicherheit geht vor)", cost: -5, eff: { economy: 0, society: -15, ecology: 0, international: -5, coalition: -10, inflation: 0 }, exp: "Höchstwahrscheinlich verfassungswidrig. Das BVerfG wird das Gesetz wegen Unverhältnismäßigkeit kassieren.", news: "Bundesverfassungsgericht kippt umstrittenes Überwachungsgesetz." },
+                    { text: "Richtervorbehalt zwingend vorschreiben", cost: 0, eff: { economy: 0, society: 10, ecology: 0, international: 5, coalition: 5, inflation: 0 }, exp: "Wahrt die Grundrechte und die Gewaltenteilung (Judikative kontrolliert Exekutive).", news: "Bürgerrechtler loben maßvolles Vorgehen der Regierung bei Sicherheitsgesetzen." },
+                    { text: "Überwachung komplett ablehnen", cost: 0, eff: { economy: 0, society: 5, ecology: 0, international: 0, coalition: -15, inflation: 0 }, exp: "Schützt die Freiheit maximal, führt aber zu Vorwürfen der Untätigkeit bei der inneren Sicherheit.", news: "Opposition wirft Regierung Naivität in der Sicherheitspolitik vor." }
+                ]
+            },
+            {
+                id: "v2", type: "Normal", module: "Verfassung & Recht",
+                title: "Wahlrechtsreform",
+                desc: "Der Bundestag ist auf über 730 Abgeordnete angewachsen. Eine Reform zur Verkleinerung ist dringend nötig.",
+                memo: "Das Wahlrecht muss die Grundsätze aus Art. 38 GG (allgemein, unmittelbar, frei, gleich, geheim) wahren. Überhang- und Ausgleichsmandate blähen das Parlament auf.",
+                opts: [
+                    { text: "Grundmandatsklausel streichen & Überhangmandate kappen", cost: 5, eff: { economy: 0, society: 5, ecology: 0, international: 0, coalition: -20, inflation: 0 }, exp: "Verkleinert den Bundestag effektiv, benachteiligt aber kleine Parteien stark (Klage vor dem BVerfG droht).", news: "Kleine Parteien klagen gegen neues Wahlrecht in Karlsruhe." },
+                    { text: "Wahlkreise massiv reduzieren", cost: 5, eff: { economy: 0, society: 0, ecology: 0, international: 0, coalition: -10, inflation: 0 }, exp: "Ein fairer Kompromiss, aber extrem unpopulär bei den eigenen Abgeordneten, die um ihre Mandate fürchten.", news: "Bundestag schrumpft: Viele Abgeordnete verlieren ihre Wahlkreise." },
+                    { text: "Reform auf die nächste Legislaturperiode verschieben", cost: -5, eff: { economy: 0, society: -15, ecology: 0, international: 0, coalition: 10, inflation: 0 }, exp: "Bequem für die Parteien, aber ein fatales Signal an die Wähler (Politikverdrossenheit).", news: "XXL-Bundestag kostet Steuerzahler Millionen: Reform erneut gescheitert." }
+                ]
+            },
+            {
+                id: "v3", type: "Meilenstein", module: "Verfassung & Recht",
+                title: "Wehrhafte Demokratie",
+                desc: "Eine extremistische Partei gewinnt an Zustimmung. Der Verfassungsschutz stuft sie als 'gesichert rechtsextrem'.",
+                memo: "Art. 21 GG erlaubt das Verbot verfassungsfeindlicher Parteien durch das BVerfG. Alternativ: Entzug der staatlichen Parteienfinanzierung.",
+                opts: [
+                    { text: "Parteienverbot beim BVerfG beantragen", cost: 0, eff: { economy: 0, society: 10, ecology: 0, international: 5, coalition: 0, inflation: 0 }, exp: "Das schärfste Schwert der wehrhaften Demokratie. Scheitert der Antrag (hohe Hürden!), ist es ein Triumph für die Extremisten.", news: "Bundesverfassungsgericht prüft Verbot der extremistischen Partei." },
+                    { text: "Ausschluss von der staatlichen Parteienfinanzierung", cost: 5, eff: { economy: 0, society: 15, ecology: 0, international: 5, coalition: 10, inflation: 0 }, exp: "Trocknet die Partei finanziell aus. Die rechtlichen Hürden sind etwas niedriger als bei einem Vollverbot.", news: "Extremisten von staatlicher Finanzierung ausgeschlossen: Parteistrukturen bröckeln." },
+                    { text: "Politische Auseinandersetzung suchen (Kein Verbot)", cost: 0, eff: { economy: 0, society: -10, ecology: 0, international: -5, coalition: -10, inflation: 0 }, exp: "Vertraut auf den mündigen Bürger. Birgt das Risiko, dass die Demokratie mit ihren eigenen Waffen geschlagen wird.", news: "Extremistische Partei zieht mit Rekordergebnis in weitere Landtage ein." }
                 ]
             }
         ];
 
-        let ksMetrics = { w: 50, v: 50, i: 50, g: 50 };
-        let ksMonth = 1;
-        let currentKsEvent = null;
-        let ksUsedEvents = [];
+        // --- KANZLER-SIMULATOR (GRAND STRATEGY) STATE & LOGIC ---
+        let ksState_v2 = {
+            month: 1,
+            budget: 50,
+            coalition: 50,
+            economy: 50,
+            society: 50,
+            ecology: 50,
+            international: 50,
+            inflation: 2.0,
+            usedEvents: [],
+            newsQueue: []
+        };
 
-        function initKanzlerSimulator() {
-            ksMetrics = { w: 50, v: 50, i: 50, g: 50 };
-            ksMonth = 1;
-            ksUsedEvents = [];
+        let currentKsEvent = null;
+
+        function initKanzlerSimulator(forceRestart = false) {
+            // Check for saved state
+            const saved = localStorage.getItem('ksState_v2');
+            if (saved && !forceRestart) {
+                if (confirm("Möchtest du dein gespeichertes Spiel fortsetzen?")) {
+                    ksState_v2 = JSON.parse(saved);
+                    document.getElementById('ks-feedback').style.display = 'none';
+                    document.getElementById('ks-main-card').style.display = 'block';
+                    updateKsUI();
+                    loadKsEvent();
+                    return;
+                }
+            }
+
+            // Reset state
+            ksState_v2 = {
+                month: 1,
+                budget: 50,
+                coalition: 50,
+                economy: 50,
+                society: 50,
+                ecology: 50,
+                international: 50,
+                inflation: 2.0,
+                usedEvents: [],
+                newsQueue: []
+            };
+            saveKsState();
+            
             document.getElementById('ks-feedback').style.display = 'none';
             document.getElementById('ks-main-card').style.display = 'block';
             updateKsUI();
             loadKsEvent();
+        }
+
+        function saveKsState() {
+            localStorage.setItem('ksState_v2', JSON.stringify(ksState_v2));
         }
 
         function getMetricColor(val) {
@@ -7945,44 +8043,84 @@
         }
 
         function updateKsUI() {
-            document.getElementById('ks-month').innerText = `Monat: ${ksMonth} im Amt`;
+            document.getElementById('ks-month').innerText = `Monat: ${ksState_v2.month} / 48`;
             
-            ['w', 'v', 'i', 'g'].forEach(m => {
-                const val = Math.max(0, Math.min(100, ksMetrics[m]));
-                document.getElementById(`ks-val-${m}`).innerText = `${val}%`;
-                const bar = document.getElementById(`ks-bar-${m}`);
-                bar.style.width = `${val}%`;
-                bar.style.backgroundColor = getMetricColor(val);
+            const metrics = ['economy', 'society', 'ecology', 'international', 'budget', 'coalition'];
+            metrics.forEach(m => {
+                const val = Math.max(0, Math.min(100, ksState_v2[m]));
+                const elVal = document.getElementById(`ks-val-${m}`);
+                const elBar = document.getElementById(`ks-bar-${m}`);
+                
+                if (elVal && elBar) {
+                    elVal.innerText = m === 'budget' ? `${Math.round(val)} Mrd.` : `${Math.round(val)}%`;
+                    elBar.style.width = `${val}%`;
+                    elBar.style.backgroundColor = getMetricColor(val);
+                }
             });
+
+            const inflationEl = document.getElementById('ks-val-inflation');
+            if (inflationEl) {
+                inflationEl.innerText = `${ksState_v2.inflation.toFixed(1)}%`;
+                inflationEl.style.color = ksState_v2.inflation > 5 ? 'var(--error)' : (ksState_v2.inflation < 1 ? 'var(--warning)' : 'var(--success)');
+            }
+
+            // Update News Ticker
+            updateNewsTicker();
+        }
+
+        function updateNewsTicker() {
+            const ticker = document.getElementById('ks-news-ticker');
+            if (!ticker) return;
+            
+            if (ksState_v2.newsQueue.length > 0) {
+                // Show the latest 3 news items
+                const recentNews = ksState_v2.newsQueue.slice(-3).reverse();
+                ticker.innerHTML = recentNews.map(n => `<span style="margin-right: 30px;">+++ ${n} +++</span>`).join('');
+            } else {
+                ticker.innerHTML = "<span>+++ Keine aktuellen Meldungen +++</span>";
+            }
         }
 
         function loadKsEvent() {
-            // Get available events
-            let available = ksDataPool.filter((_, idx) => !ksUsedEvents.includes(idx));
+            // Filter available events
+            let available = advancedPoliticalEvents.filter(e => !ksState_v2.usedEvents.includes(e.id));
             
-            // If all events played, reset pool (or win game)
             if (available.length === 0) {
-                ksUsedEvents = [];
-                available = [...ksDataPool];
+                // Game Won (or reset)
+                showKsGameOver("Legislaturperiode erfolgreich beendet!", "Du hast die 4 Jahre überstanden. Glückwunsch!", true);
+                return;
             }
 
             // Pick random event
             const randIdx = Math.floor(Math.random() * available.length);
             currentKsEvent = available[randIdx];
             
-            // Find original index to mark as used
-            const origIdx = ksDataPool.indexOf(currentKsEvent);
-            ksUsedEvents.push(origIdx);
+            ksState_v2.usedEvents.push(currentKsEvent.id);
+            saveKsState();
 
-            document.getElementById('ks-scenario').innerHTML = `<strong>AKTE: ${currentKsEvent.title}</strong><br><br>${currentKsEvent.desc}`;
+            // Update UI
+            document.getElementById('ks-event-type').innerText = currentKsEvent.type;
+            const scenarioEl = document.getElementById('ks-scenario');
+            scenarioEl.innerHTML = `
+                <div style="font-size: 0.8rem; color: var(--accent); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px;">
+                    ${currentKsEvent.module}
+                </div>
+                <strong style="font-size: 1.2rem; display: block; margin-bottom: 10px;">${currentKsEvent.title}</strong>
+                <p>${currentKsEvent.desc}</p>
+            `;
             
+            const memoBox = document.getElementById('ks-memo-box');
+            memoBox.innerHTML = `<strong>Experten-Briefing:</strong><br>${currentKsEvent.memo}`;
+            memoBox.style.display = 'none';
+            document.getElementById('ks-memo-btn').style.display = 'flex';
+
             const optsContainer = document.getElementById('ks-options');
             optsContainer.innerHTML = '';
             
             currentKsEvent.opts.forEach((opt, idx) => {
                 const btn = document.createElement('button');
                 btn.className = 'quiz-option';
-                btn.innerText = opt.text;
+                btn.innerHTML = `<strong>${opt.text}</strong> <span style="font-size: 0.8rem; opacity: 0.7;">(Kosten: ${opt.cost > 0 ? '+'+opt.cost : opt.cost} Mrd. €)</span>`;
                 btn.onclick = () => handleKsDecision(idx);
                 optsContainer.appendChild(btn);
             });
@@ -7992,11 +8130,32 @@
             const opt = currentKsEvent.opts[optIdx];
             
             // Apply effects
-            ksMetrics.w += opt.eff.w;
-            ksMetrics.v += opt.eff.v;
-            ksMetrics.i += opt.eff.i;
-            ksMetrics.g += opt.eff.g;
+            ksState_v2.budget += opt.cost;
+            ksState_v2.economy += opt.eff.economy;
+            ksState_v2.society += opt.eff.society;
+            ksState_v2.ecology += opt.eff.ecology;
+            ksState_v2.international += opt.eff.international;
+            ksState_v2.coalition += opt.eff.coalition;
+            ksState_v2.inflation += opt.eff.inflation;
             
+            // Add news to queue
+            if (opt.news) {
+                ksState_v2.newsQueue.push(opt.news);
+                if (ksState_v2.newsQueue.length > 10) ksState_v2.newsQueue.shift(); // Keep max 10
+            }
+
+            // Bundesverfassungsgericht Intervention (Budget)
+            let bverfgIntervention = false;
+            let expText = opt.exp;
+            if (ksState_v2.budget < 0) {
+                bverfgIntervention = true;
+                ksState_v2.budget = 0; // Reset to 0
+                ksState_v2.coalition -= 15; // Massive trust loss
+                ksState_v2.society -= 10;
+                expText += "<br><br><strong style='color: var(--error);'>⚠️ BVerfG INTERVENTION:</strong> Der Haushalt ist verfassungswidrig! Das Bundesverfassungsgericht hat eine Haushaltssperre verhängt. Geplante Sozial- und Infrastrukturprojekte wurden gestoppt. Die Koalition wackelt massiv!";
+            }
+
+            saveKsState();
             updateKsUI();
 
             // Hide main card, show feedback
@@ -8005,13 +8164,7 @@
             feedback.style.display = 'block';
             
             // Check for game over conditions
-            let isGameOver = false;
-            let gameOverReason = "";
-            
-            if (ksMetrics.w <= 0) { isGameOver = true; gameOverReason = "Staatsbankrott! Die Wirtschaft ist komplett zusammengebrochen."; }
-            else if (ksMetrics.v <= 0) { isGameOver = true; gameOverReason = "Verfassungskrise! Das Bundesverfassungsgericht hat dich wegen schwerer Verfassungsbrüche des Amtes enthoben."; }
-            else if (ksMetrics.i <= 0) { isGameOver = true; gameOverReason = "Internationale Isolation! Deutschland wurde mit massiven Sanktionen belegt und hat alle Bündnispartner verloren."; }
-            else if (ksMetrics.g <= 0) { isGameOver = true; gameOverReason = "Volksaufstand! Die Gesellschaft ist tief gespalten, Massenproteste zwingen dich zum Rücktritt."; }
+            const gameOverCheck = checkKsGameOver();
 
             const titleEl = document.getElementById('ks-feedback-title');
             const textEl = document.getElementById('ks-feedback-text');
@@ -8019,36 +8172,75 @@
             
             impactsEl.innerHTML = '';
 
-            if (isGameOver) {
-                titleEl.innerHTML = '❌ REGIONALREGIERUNG GESTÜRZT (GAME OVER)';
-                titleEl.style.color = 'var(--error)';
-                textEl.innerHTML = `<strong>${gameOverReason}</strong><br><br>Letzte Aktion: ${opt.exp}<br><br>Du hast ${ksMonth} Monate im Amt überlebt.`;
-                document.querySelector('#ks-feedback button').innerText = 'Neues Spiel starten';
-                document.querySelector('#ks-feedback button').onclick = initKanzlerSimulator;
+            if (gameOverCheck.isOver) {
+                showKsGameOver(gameOverCheck.title, `${gameOverCheck.reason}<br><br>Letzte Aktion: ${expText}`, false);
             } else {
-                titleEl.innerHTML = '📋 Berater-Analyse (Abitur-Wissen)';
+                titleEl.innerHTML = '📋 Analyse & Konsequenzen';
                 titleEl.style.color = 'var(--text-primary)';
-                textEl.innerHTML = opt.exp;
+                textEl.innerHTML = expText;
                 
                 // Show impact badges
-                const labels = { w: 'Wirtschaft', v: 'Verfassung', i: 'International', g: 'Gesellschaft' };
-                ['w', 'v', 'i', 'g'].forEach(m => {
+                const labels = { economy: 'Wirtschaft', society: 'Gesellschaft', ecology: 'Ökologie', international: 'International', coalition: 'Koalition', inflation: 'Inflation' };
+                Object.keys(opt.eff).forEach(m => {
                     if (opt.eff[m] !== 0) {
                         const badge = document.createElement('span');
                         const isPos = opt.eff[m] > 0;
-                        badge.className = `impact-badge ${isPos ? 'impact-pos' : 'impact-neg'}`;
-                        badge.innerText = `${labels[m]} ${isPos ? '+' : ''}${opt.eff[m]}`;
+                        // For inflation, positive is usually bad, but let's just color by value
+                        let badgeClass = isPos ? 'impact-pos' : 'impact-neg';
+                        if (m === 'inflation') badgeClass = isPos ? 'impact-neg' : 'impact-pos'; // Inverse for inflation
+                        
+                        badge.className = `impact-badge ${badgeClass}`;
+                        badge.innerText = `${labels[m]} ${isPos ? '+' : ''}${opt.eff[m]}${m==='inflation'?'%':''}`;
                         impactsEl.appendChild(badge);
                     }
                 });
+
+                if (opt.cost !== 0) {
+                    const costBadge = document.createElement('span');
+                    costBadge.className = `impact-badge ${opt.cost > 0 ? 'impact-pos' : 'impact-neg'}`;
+                    costBadge.innerText = `Budget ${opt.cost > 0 ? '+' : ''}${opt.cost} Mrd.`;
+                    impactsEl.appendChild(costBadge);
+                }
 
                 document.querySelector('#ks-feedback button').innerText = 'Nächster Monat ➔';
                 document.querySelector('#ks-feedback button').onclick = nextKsTurn;
             }
         }
 
+        function checkKsGameOver() {
+            if (ksState_v2.coalition <= 0) return { isOver: true, title: "KOALITION GEPLATZT", reason: "Dein Koalitionspartner hat das Vertrauen entzogen. Die Regierung ist am Ende." };
+            if (ksState_v2.economy <= 0) return { isOver: true, title: "WIRTSCHAFTSKOLLAPS", reason: "Die Wirtschaft ist komplett zusammengebrochen. Massenarbeitslosigkeit und Firmenpleiten." };
+            if (ksState_v2.society <= 0) return { isOver: true, title: "VOLKSAUFSTAND", reason: "Die Gesellschaft ist tief gespalten, Massenproteste zwingen dich zum Rücktritt." };
+            if (ksState_v2.ecology <= 0) return { isOver: true, title: "ÖKOLOGISCHE KATASTROPHE", reason: "Ignorierte Umweltkrisen führen zu massiven Zerstörungen und unbezahlbaren Schäden." };
+            if (ksState_v2.international <= 0) return { isOver: true, title: "INTERNATIONALE ISOLATION", reason: "Deutschland wurde mit Sanktionen belegt und hat alle Bündnispartner verloren." };
+            if (ksState_v2.inflation >= 15) return { isOver: true, title: "HYPERINFLATION", reason: "Die Geldentwertung ist außer Kontrolle. Das Wirtschaftssystem kollabiert." };
+            if (ksState_v2.month >= 48) return { isOver: true, title: "LEGISLATURPERIODE BEENDET", reason: "Du hast die vollen 4 Jahre regiert. Zeit für Neuwahlen!" };
+            
+            return { isOver: false };
+        }
+
+        function showKsGameOver(title, text, isWin) {
+            const titleEl = document.getElementById('ks-feedback-title');
+            const textEl = document.getElementById('ks-feedback-text');
+            const impactsEl = document.getElementById('ks-feedback-impacts');
+            
+            impactsEl.innerHTML = '';
+            
+            titleEl.innerHTML = isWin ? `🏆 ${title}` : `❌ ${title} (GAME OVER)`;
+            titleEl.style.color = isWin ? 'var(--success)' : 'var(--error)';
+            textEl.innerHTML = `<strong>${text}</strong><br><br>Du hast ${ksState_v2.month} Monate im Amt überlebt.`;
+            
+            const btn = document.querySelector('#ks-feedback button');
+            btn.innerText = 'Neues Spiel starten';
+            btn.onclick = () => {
+                localStorage.removeItem('ksState_v2');
+                initKanzlerSimulator(true);
+            };
+        }
+
         function nextKsTurn() {
-            ksMonth++;
+            ksState_v2.month++;
+            saveKsState();
             document.getElementById('ks-feedback').style.display = 'none';
             document.getElementById('ks-main-card').style.display = 'block';
             updateKsUI();
